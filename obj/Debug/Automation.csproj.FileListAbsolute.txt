@@ -1,0 +1,12 @@
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\bin\Debug\Automation.exe.config
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\bin\Debug\Automation.exe
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\bin\Debug\Automation.pdb
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.csprojAssemblyReference.cache
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.Properties.Resources.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.csproj.GenerateResource.cache
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.csproj.CoreCompileInputs.cache
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.exe
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.pdb
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.main_form.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.Settings.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.windows_variant.resources
