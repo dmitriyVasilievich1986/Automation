@@ -45,6 +45,7 @@ namespace Automation
         ToolTip button_tooltip;
         public string button_description = "";
         public float result = 0;
+        public ControlButton[] menuing;
 
         public ControlButton(
             DockStyle dock_style = DockStyle.Top,
@@ -57,10 +58,11 @@ namespace Automation
             string using_description = "",
             Delegate using_delegate = null,
             ToolTip using_tooltip = null,
+            ControlButton[] using_menu = null,
             bool hide_panel = true
         )
         {
-            this.MouseClick += (MouseEventHandler)using_delegate;
+            this.MouseDown += (MouseEventHandler)using_delegate;
             this.Width = using_width;
             this.Height = using_height;
             this.Dock = dock_style;
@@ -84,6 +86,8 @@ namespace Automation
                 if (using_button_text_constructor.control_color != null)
                     this.ForeColor = using_button_text_constructor.control_color;
             }
+            if (using_menu != null)
+                menuing = using_menu;
             if (using_tooltip != null)
                 button_tooltip = using_tooltip;
         }

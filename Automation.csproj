@@ -53,6 +53,12 @@
       <DependentUpon>ComPortOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="data_sending.cs" />
+    <Compile Include="EnterField.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EnterField.Designer.cs">
+      <DependentUpon>EnterField.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +89,12 @@
     <Compile Include="windows_variant.Designer.cs">
       <DependentUpon>windows_variant.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ComPortOptions.resx">
+      <DependentUpon>ComPortOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EnterField.resx">
+      <DependentUpon>EnterField.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

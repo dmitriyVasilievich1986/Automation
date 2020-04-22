@@ -22,3 +22,17 @@ C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.csproj.Co
 C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.exe
 C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.pdb
 C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.MainForm.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\bin\Debug\Automation.exe.config
+C:\Users\Professional\Documents\Projects\C#\Automation\bin\Debug\Automation.exe
+C:\Users\Professional\Documents\Projects\C#\Automation\bin\Debug\Automation.pdb
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.csprojAssemblyReference.cache
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.MainForm.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.Properties.Resources.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.Settings.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.windows_variant.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.csproj.GenerateResource.cache
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.csproj.CoreCompileInputs.cache
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.exe
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.pdb
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.EnterField.resources
+C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.ComPortOptions.resources

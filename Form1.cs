@@ -56,7 +56,7 @@ namespace Automation
                     this.Height += (e.Y - LastPoint.Y) / 40;
                 }
             };
-            btn_close_application.MouseClick += (s, e) => { Application.Exit(); };
+            btn_close_application.MouseClick += (s, e) => { this.Dispose(); };
             btn_minimize_application.MouseClick += (s, e) => { this.WindowState = FormWindowState.Minimized; };
             btn_maximized_application.MouseClick += (s, e) => {
                 if (this.WindowState != FormWindowState.Maximized)
@@ -83,8 +83,6 @@ namespace Automation
                     using_panel_constructor: new ControlConstructor(
                         using_color: Color.Black)
                 );
-            
-
 
             // **** module **** //
 
@@ -145,8 +143,27 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
+                using_menu: new ControlButton[] {new ControlButton(
+                    dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть порт",
+                    using_delegate: new MouseEventHandler(close_port),
+                    using_height: 55),
+                    new ControlButton(
+                    dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть порт",
+                    using_delegate: new MouseEventHandler(open_port),
+                    using_height: 55)
+                },
+                using_delegate: new MouseEventHandler(open_com_port_form),
                 using_name: "port_chanelC",
                 using_text: "Порт модуля канал C",
+                using_description: "Один из портов обмена проверяемого модуля. Канал С.",
                 using_height: 55
                 ));
             control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
@@ -154,6 +171,25 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
+                using_delegate: new MouseEventHandler(open_com_port_form),
+                using_menu: new ControlButton[] {new ControlButton(
+                    dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть порт",
+                    using_delegate: new MouseEventHandler(close_port),
+                    using_height: 55),
+                    new ControlButton(
+                    dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть порт",
+                    using_delegate: new MouseEventHandler(open_port),
+                    using_height: 55)
+                },
+                using_description: "Один из портов обмена проверяемого модуля. Канал B.",
                 using_name: "port_chanelB",
                 using_text: "Порт модуля канал B",
                 using_height: 55
@@ -163,7 +199,26 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
+                using_menu: new ControlButton[] {new ControlButton(
+                    dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть порт",
+                    using_delegate: new MouseEventHandler(close_port),
+                    using_height: 55),
+                    new ControlButton(
+                    dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть порт",
+                    using_delegate: new MouseEventHandler(open_port),
+                    using_height: 55)
+                },
+                using_description: "Один из портов обмена проверяемого модуля. Канал A.",
                 using_name: "port_chanelA",
+                using_delegate: new MouseEventHandler(open_com_port_form),
                 using_text: "Порт модуля канал А",
                 using_height: 55
                 ));
@@ -310,12 +365,49 @@ namespace Automation
 
         private void open_form_with_dialog(object sender, MouseEventArgs e)
         {
-            windows_variant win = new windows_variant(Cursor.Position.X - 50, Cursor.Position.Y - 50, ((ControlButton)sender).button_description);
+            windows_variant win = new windows_variant(
+                Cursor.Position.X - 50,
+                Cursor.Position.Y - 50,
+                ((ControlButton)sender).button_description,
+                ((ControlButton)sender).menuing);
             win.StartPosition = FormStartPosition.Manual;
             win.Show();
         }
 
         void open_com_port_form(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Right)
+            {
+                open_form_with_dialog(sender, e);
+            }
+            else
+            {
+                Modbus port = new Modbus();
+                switch (((ControlButton)sender).Name)
+                {
+                    case "control_port":
+                        port = port_control;
+                        break;
+                    case "port_chanelA":
+                        port = port_chanel_a;
+                        break;
+                    case "port_chanelB":
+                        port = port_chanel_b;
+                        break;
+                    case "port_chanelC":
+                        port = port_chanel_c;
+                        break;
+                }
+                main_tm_window.Visible = false;
+                ComPortOptions cpo = new ComPortOptions(port);
+                child_form_panel.Controls.Add(cpo);
+                cpo.Show();
+                cpo.some_event += (a, b) => { condition_tb.Text += cpo.event_text + Environment.NewLine; };
+                cpo.FormClosing += (se, ev) => { cpo.Dispose(); main_tm_window.Visible = true; };
+            }            
+        }
+
+        void open_port(object sender, MouseEventArgs e)
         {
             Modbus port = new Modbus();
             switch (((ControlButton)sender).Name)
@@ -333,10 +425,34 @@ namespace Automation
                     port = port_chanel_c;
                     break;
             }
-            main_tm_window.Visible = false;
-            ComPortOptions cpo = new ComPortOptions(port);
-            child_form_panel.Controls.Add(cpo);
-            cpo.Show();
+            try
+            {
+                port.Open();
+            }
+            catch(Exception error) { condition_tb.Text += error.Message + Environment.NewLine; }
+            if (port.IsOpen) condition_tb.Text += $"  Порт {port.PortName} открыт" + Environment.NewLine;
+        }
+
+        void close_port(object sender, MouseEventArgs e)
+        {
+            Modbus port = new Modbus();
+            switch (((ControlButton)sender).Name)
+            {
+                case "control_port":
+                    port = port_control;
+                    break;
+                case "port_chanelA":
+                    port = port_chanel_a;
+                    break;
+                case "port_chanelB":
+                    port = port_chanel_b;
+                    break;
+                case "port_chanelC":
+                    port = port_chanel_c;
+                    break;
+            }
+            port.Close();
+            condition_tb.Text += $"  Порт {port.PortName} закрыт" + Environment.NewLine;
         }
     }
 }

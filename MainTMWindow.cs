@@ -20,6 +20,12 @@ namespace Automation
             this.TopLevel = false;
             this.BringToFront();
             this.Padding = new Padding(0, 10, 0, 0);
+            this.Controls.Add(new ControlPanel(
+                dock_style: DockStyle.Top,
+                using_height: 100,
+                using_panel_constructor: new ControlConstructor(
+                    using_color: Color.Red
+                    )));
         }
     }
 }
