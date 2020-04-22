@@ -54,7 +54,6 @@ namespace Automation
             this.PortName = using_port_name;
             this.name = using_name;
             this.DataBits = 8;
-            this.StopBits = StopBits.None;
             this.DataReceived += new SerialDataReceivedEventHandler(receive);
         }
 

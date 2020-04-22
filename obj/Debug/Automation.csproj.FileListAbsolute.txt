@@ -10,3 +10,15 @@ C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Auto
 C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.main_form.resources
 C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.Settings.resources
 C:\Users\Professional\Documents\Projects\C#\Automation\Automation\obj\Debug\Automation.windows_variant.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\bin\Debug\Automation.exe.config
+C:\Users\d.shcherbachenya\Documents\C#\Automation\bin\Debug\Automation.exe
+C:\Users\d.shcherbachenya\Documents\C#\Automation\bin\Debug\Automation.pdb
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.csprojAssemblyReference.cache
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.Properties.Resources.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.Settings.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.windows_variant.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.csproj.GenerateResource.cache
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.csproj.CoreCompileInputs.cache
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.exe
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.pdb
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.MainForm.resources

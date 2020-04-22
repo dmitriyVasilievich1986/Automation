@@ -10,15 +10,33 @@ using System.Windows.Forms;
 
 namespace Automation
 {
-    public partial class main_form : Form
+    public partial class MainForm: Form
     {
         Point LastPoint;
         Settings settings_form;
+        MainTMWindow main_tm_window;
 
         ControlPanel main_panel;
         ControlPanel control_panel;
+        ControlPanel child_form_panel;
 
         TextBox condition_tb;
+
+        Modbus port_control = new Modbus();
+        Modbus port_chanel_a = new Modbus();
+        Modbus port_chanel_b = new Modbus();
+        Modbus port_chanel_c = new Modbus();
+
+        public MainForm()
+        {
+            InitializeComponent();
+            initialize_form_comtrol();
+            control_init();
+            load_condition_panel();
+            all_form_load();
+            condition_tb.Text += "    Форма зугружена успешно" + Environment.NewLine;
+
+        }
 
         #region initialization
 
@@ -63,7 +81,7 @@ namespace Automation
                     using_width: 350,
                     using_tooltip: new ToolTip(),
                     using_panel_constructor: new ControlConstructor(
-                        using_color: Color.FromArgb(28, 40, 52))
+                        using_color: Color.Black)
                 );
             
 
@@ -127,8 +145,8 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
-                using_name: "test",
-                using_text: "test",
+                using_name: "port_chanelC",
+                using_text: "Порт модуля канал C",
                 using_height: 55
                 ));
             control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
@@ -136,8 +154,27 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
-                using_name: "test",
-                using_text: "test",
+                using_name: "port_chanelB",
+                using_text: "Порт модуля канал B",
+                using_height: 55
+                ));
+            control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
+                dock_style: DockStyle.Top,
+                using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                using_name: "port_chanelA",
+                using_text: "Порт модуля канал А",
+                using_height: 55
+                ));
+            control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
+                dock_style: DockStyle.Top,
+                using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                using_delegate: new MouseEventHandler(open_com_port_form),
+                using_name: "control_port",
+                using_text: "Порт управления",
                 using_height: 55
                 ));
             control_panel.add(new ControlButton(
@@ -157,13 +194,22 @@ namespace Automation
 
         void all_form_load()
         {
-            settings_form = new Settings();
-            main_panel.Controls.Add(settings_form);
-            settings_form.Show();            
+            main_tm_window = new MainTMWindow();
+            child_form_panel.Controls.Add(main_tm_window);
+            main_tm_window.Show();
         }
 
         void load_condition_panel()
         {
+            child_form_panel = new ControlPanel(
+                dock_style: DockStyle.Fill,
+                using_width: 350,
+                using_tooltip: new ToolTip(),
+                using_panel_constructor: new ControlConstructor(
+                    using_padding: new Padding(0, 10, 0, 0),
+                    using_color: Color.Black)
+            );
+            main_panel.add(child_form_panel);
             main_panel.add(new ControlPanel(
                 using_name: "condition_panel",
                 using_height: 220,
@@ -251,27 +297,12 @@ namespace Automation
 
         #endregion
 
-        public main_form()
-        {
-            InitializeComponent();
-            initialize_form_comtrol();
-            control_init();
-            all_form_load();
-            load_condition_panel();
-            condition_tb.Text += "    Форма зугружена успешно" + Environment.NewLine;
-        }
-
         private void hide_control_panel(object sender, MouseEventArgs e)
         {
             foreach(ControlPanel cp in control_panel.search_panel_control())
             {
                 if(((ControlButton)sender).Name == cp.Name)
-                {
-                    if(cp.Visible)
-                        cp.Visible = false;
-                    else
-                        cp.Visible = true;
-                }                    
+                    cp.Visible = cp.Visible ? false : true;
                 else
                     cp.Visible = false;
             }
@@ -282,6 +313,30 @@ namespace Automation
             windows_variant win = new windows_variant(Cursor.Position.X - 50, Cursor.Position.Y - 50, ((ControlButton)sender).button_description);
             win.StartPosition = FormStartPosition.Manual;
             win.Show();
+        }
+
+        void open_com_port_form(object sender, MouseEventArgs e)
+        {
+            Modbus port = new Modbus();
+            switch (((ControlButton)sender).Name)
+            {
+                case "control_port":
+                    port = port_control;
+                    break;
+                case "port_chanelA":
+                    port = port_chanel_a;
+                    break;
+                case "port_chanelB":
+                    port = port_chanel_b;
+                    break;
+                case "port_chanelC":
+                    port = port_chanel_c;
+                    break;
+            }
+            main_tm_window.Visible = false;
+            ComPortOptions cpo = new ComPortOptions(port);
+            child_form_panel.Controls.Add(cpo);
+            cpo.Show();
         }
     }
 }

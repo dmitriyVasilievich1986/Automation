@@ -46,11 +46,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComPortOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComPortOptions.Designer.cs">
+      <DependentUpon>ComPortOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="data_sending.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainTMWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainTMWindow.Designer.cs">
+      <DependentUpon>MainTMWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Modbus.cs">
       <SubType>Component</SubType>

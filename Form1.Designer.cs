@@ -1,6 +1,6 @@
 ﻿namespace Automation
 {
-    partial class main_form
+    partial class MainForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -30,10 +30,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main_form));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btn_close_application = new System.Windows.Forms.PictureBox();
             this.btn_minimize_application = new System.Windows.Forms.PictureBox();
             this.btn_maximized_application = new System.Windows.Forms.PictureBox();
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.btn_close_application)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btn_minimize_application)).BeginInit();
