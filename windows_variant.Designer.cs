@@ -37,7 +37,7 @@
             this.ClientSize = new System.Drawing.Size(500, 400);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "windows_variant";
-            this.Padding = new System.Windows.Forms.Padding(10);
+            this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "windows_variant";
             this.ResumeLayout(false);
 

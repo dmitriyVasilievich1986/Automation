@@ -43,10 +43,8 @@ namespace Automation
             this.Controls.Add(main_panel);
         }
 
-        public windows_variant(int x, int y, string describe, ControlButton[] menu)
+        public windows_variant(int x, int y, string describe, ButtonConstructor[] menu)
         {
-            List<ControlButton> new_menu = new List<ControlButton>();
-            new_menu.AddRange(menu);
             InitializeComponent();
             initialzitaion_main_panel();
             description_textbox.Text = describe;
@@ -55,13 +53,13 @@ namespace Automation
             this.MouseEnter += (s, e) => { this.Dispose(); };
             if (menu != null)
             {
-                foreach (ControlButton cb in new_menu)
+                foreach(ButtonConstructor butcon in menu)
                 {
-                    main_panel.search_panel_control("main_panel")[0].add(cb);
+                    main_panel.search_panel_control("main_panel")[0].add(new ControlButton(butcon));
                 }
+                this.Height = description_textbox.Height + Padding.Top + Padding.Bottom + main_panel.search_button_control().Count * 55;
             }
-            this.Height = 170 + main_panel.search_button_control().Count * 55;
-            //this.Height = 350;
+            else this.Height = description_textbox.Height + Padding.Top + Padding.Bottom;
         }
     }
 }

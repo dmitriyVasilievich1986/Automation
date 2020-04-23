@@ -14,10 +14,53 @@ namespace Automation
 
     }
 
+    public class ButtonConstructor
+    {
+        public DockStyle dock_style;
+        public Color back_color;
+        public Padding button_padding;
+        public Color text_color;
+        public Padding text_padding;
+        public int width;
+        public int height;
+        public string name;
+        public string text;
+        public string description;
+        public Delegate new_delegate;
+
+        public ButtonConstructor(
+            DockStyle using_dock_style = DockStyle.Top,
+            ControlConstructor using_button_constructor = null,
+            ControlConstructor using_button_text_constructor = null,
+            int using_width = 100,
+            int using_height = 100,
+            string using_text = "",
+            string using_name = "",
+            string using_description = "",
+            Delegate using_delegate = null,
+            ToolTip using_tooltip = null,
+            ControlButton[] using_menu = null,
+            bool hide_panel = true
+        )
+        {
+            dock_style = using_dock_style;
+            if (using_button_constructor != null) back_color = using_button_constructor.control_color;
+            if (using_button_constructor != null) button_padding = using_button_constructor.control_padding;
+            if (using_button_text_constructor != null) text_color = using_button_text_constructor.control_color;
+            if (using_button_text_constructor != null) text_padding = using_button_text_constructor.control_padding;
+            width = using_width;
+            height = using_height;
+            name = using_name;
+            text = using_text;
+            description = using_description;
+            new_delegate = using_delegate;
+        }
+    }
+
     public class ControlConstructor
     {
-        public Color control_color;
-        public Padding control_padding;
+        public Color control_color = Color.White;
+        public Padding control_padding = new Padding(0, 0, 0, 0);
 
         public ControlConstructor(Color using_color)
         {
@@ -45,7 +88,7 @@ namespace Automation
         ToolTip button_tooltip;
         public string button_description = "";
         public float result = 0;
-        public ControlButton[] menuing;
+        public ButtonConstructor[] menuing;
 
         public ControlButton(
             DockStyle dock_style = DockStyle.Top,
@@ -58,7 +101,7 @@ namespace Automation
             string using_description = "",
             Delegate using_delegate = null,
             ToolTip using_tooltip = null,
-            ControlButton[] using_menu = null,
+            ButtonConstructor[] using_menu = null,
             bool hide_panel = true
         )
         {
@@ -90,6 +133,25 @@ namespace Automation
                 menuing = using_menu;
             if (using_tooltip != null)
                 button_tooltip = using_tooltip;
+        }
+
+        public ControlButton(ButtonConstructor constructor)
+        {
+            this.FlatStyle = FlatStyle.Flat;
+            this.TextAlign = ContentAlignment.MiddleLeft;
+            this.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            this.FlatAppearance.BorderSize = 0;
+
+            Dock = constructor.dock_style;
+            if (constructor.back_color != null) BackColor = constructor.back_color;
+            if (constructor.button_padding != null) Padding = constructor.button_padding;
+            if (constructor.text_color != null) ForeColor = constructor.text_color;
+            Width = constructor.width;
+            Height = constructor.height;
+            Name= constructor.name;
+            Text = constructor.text;
+            button_description = constructor.description;
+            this.MouseDown += (MouseEventHandler)constructor.new_delegate;
         }
 
         public float Result

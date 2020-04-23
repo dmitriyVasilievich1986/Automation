@@ -36,3 +36,5 @@ C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.exe
 C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.pdb
 C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.EnterField.resources
 C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.ComPortOptions.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.ComPortOptions.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.EnterField.resources

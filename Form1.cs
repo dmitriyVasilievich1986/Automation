@@ -143,16 +143,16 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
-                using_menu: new ControlButton[] {new ControlButton(
-                    dock_style: DockStyle.Top,
+                using_menu: new ButtonConstructor[] {new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
                     using_text: "Закрыть порт",
                     using_delegate: new MouseEventHandler(close_port),
                     using_height: 55),
-                    new ControlButton(
-                    dock_style: DockStyle.Top,
+                    new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
@@ -172,16 +172,16 @@ namespace Automation
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
                 using_delegate: new MouseEventHandler(open_com_port_form),
-                using_menu: new ControlButton[] {new ControlButton(
-                    dock_style: DockStyle.Top,
+                using_menu: new ButtonConstructor[] {new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
                     using_text: "Закрыть порт",
                     using_delegate: new MouseEventHandler(close_port),
                     using_height: 55),
-                    new ControlButton(
-                    dock_style: DockStyle.Top,
+                    new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
@@ -199,16 +199,16 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
-                using_menu: new ControlButton[] {new ControlButton(
-                    dock_style: DockStyle.Top,
+                using_menu: new ButtonConstructor[] {new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
                     using_text: "Закрыть порт",
                     using_delegate: new MouseEventHandler(close_port),
                     using_height: 55),
-                    new ControlButton(
-                    dock_style: DockStyle.Top,
+                    new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
@@ -230,6 +230,24 @@ namespace Automation
                 using_delegate: new MouseEventHandler(open_com_port_form),
                 using_name: "control_port",
                 using_text: "Порт управления",
+                using_menu: new ButtonConstructor[] {new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть порт",
+                    using_delegate: new MouseEventHandler(close_port),
+                    using_height: 55),
+                    new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть порт",
+                    using_delegate: new MouseEventHandler(open_port),
+                    using_height: 55)
+                },
+                using_description: "Порт управления. Основной порт приема данных.",
                 using_height: 55
                 ));
             control_panel.add(new ControlButton(
@@ -269,6 +287,7 @@ namespace Automation
                 using_name: "condition_panel",
                 using_height: 220,
                 using_panel_constructor: new ControlConstructor(
+                    using_color: Color.Black,
                     using_padding: new Padding(0, 0, 0, 0))
                 ));
 
@@ -289,6 +308,7 @@ namespace Automation
                 using_width: 350,
                 dock_style: DockStyle.Left,
                 using_panel_constructor: new ControlConstructor(
+                    using_color: Color.Black,
                     using_padding: new Padding(0, 0, 10, 0))
                 ));
             main_panel.search_panel_control("mtu_condition_panel")[0].add(new ControlButton(
@@ -330,6 +350,7 @@ namespace Automation
                 using_width: 350,
                 dock_style: DockStyle.Left,
                 using_panel_constructor: new ControlConstructor(
+                    using_color: Color.Black,
                     using_padding: new Padding(0, 0, 10, 0))
                 ));
 
@@ -379,6 +400,7 @@ namespace Automation
             if(e.Button == MouseButtons.Right)
             {
                 open_form_with_dialog(sender, e);
+                return;
             }
             else
             {
