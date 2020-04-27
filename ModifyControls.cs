@@ -93,8 +93,7 @@ namespace Automation
         public string port_name;
         public DataAddress module;
         public byte[] addres = new byte[2];
-        Color start_color;
-
+        public Color start_color;
 
         public ControlButton(
             byte[] addres,
@@ -187,6 +186,11 @@ namespace Automation
         {
             if (using_addres[0] != module.Addres || addres[0] != using_addres[1] || addres[1] != using_addres[2]) return;
             Result = new_value;
+        }
+
+        public void button_color(int change_color)
+        {
+            this.BackColor = change_color == 1 ? Color.Red : this.start_color;
         }
     }
 

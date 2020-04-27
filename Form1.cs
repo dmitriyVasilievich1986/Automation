@@ -618,5 +618,10 @@ namespace Automation
             //}
 
         }
+
+        public void color_button(ControlButton button, int result)
+        {
+            button.BackColor = result == 1 ? Color.Red : button.start_color;
+        }
     }
 }
