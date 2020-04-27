@@ -34,7 +34,6 @@
             this.btn_close_application = new System.Windows.Forms.PictureBox();
             this.btn_minimize_application = new System.Windows.Forms.PictureBox();
             this.btn_maximized_application = new System.Windows.Forms.PictureBox();
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.btn_close_application)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btn_minimize_application)).BeginInit();
@@ -76,7 +75,7 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // main_form
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -87,8 +86,9 @@
             this.Controls.Add(this.btn_close_application);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MinimumSize = new System.Drawing.Size(1400, 750);
-            this.Name = "main_form";
+            this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(10, 60, 10, 10);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.btn_close_application)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btn_minimize_application)).EndInit();

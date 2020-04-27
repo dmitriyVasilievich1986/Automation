@@ -6,9 +6,23 @@ using System.Threading.Tasks;
 
 namespace Automation
 {
-    class data_sending
+    public class DataSending
     {
+        DataAddress address;
+        public byte[] data;
 
+        public DataSending(DataAddress using_addres, byte[] using_data)
+        {
+            data = using_data;
+            address = using_addres;
+        }
+
+        public byte[] send_data()
+        {
+            byte[] output = data;
+            output[0] = address.Addres;
+            return output;
+        }
     }
 
     public class DataAddress

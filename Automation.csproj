@@ -83,6 +83,12 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="TransmitionArray.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransmitionArray.Designer.cs">
+      <DependentUpon>TransmitionArray.cs</DependentUpon>
+    </Compile>
     <Compile Include="windows_variant.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +115,9 @@
     </Compile>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransmitionArray.resx">
+      <DependentUpon>TransmitionArray.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="windows_variant.resx">
       <DependentUpon>windows_variant.cs</DependentUpon>

@@ -29,7 +29,23 @@ namespace Automation
             this.TopLevel = false;
             this.BringToFront();
             control_panel_add();
+            port_exchange();
+        }
 
+        void port_exchange()
+        {
+            Task.Run(async()=> {
+                while (!this.IsDisposed)
+                {
+                    BeginInvoke((MethodInvoker)(() =>
+                    {
+                        main_panel.search_button_control("com_port_addres")[0].BackColor = port.exchange_counter < 5 && port.IsOpen ? Color.Green : Color.FromArgb(113, 125, 137);
+                        main_panel.search_button_control("com_port_close")[0].Visible = port.IsOpen ? true : false;
+                        main_panel.search_button_control("com_port_open")[0].Visible = port.IsOpen ? false : true;
+                    }));
+                    await Task.Delay(100);
+                }
+            });            
         }
 
         void control_panel_add()
@@ -51,6 +67,7 @@ namespace Automation
                     using_padding: new Padding(0, 50, 10, 0)
                     )));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
+                addres: new byte[1],
                 using_name: "com_port_open",
                 using_delegate: new MouseEventHandler(open_port),
                 using_text: "Открыть порт",
@@ -61,6 +78,7 @@ namespace Automation
                     using_padding: new Padding(40, 0, 0, 0))
                 ));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
+                addres: new byte[1],
                 using_name: "com_port_close",
                 using_text: "Закрыть порт",
                 using_delegate: new MouseEventHandler(close_port),
@@ -71,6 +89,7 @@ namespace Automation
                     using_padding: new Padding(40, 0, 0, 0))
                 ));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
+                addres: new byte[1],
                 using_name: "com_port_addres",
                 using_text: port.PortName,
                 using_delegate: new MouseEventHandler(choose_com_port_name),
@@ -89,6 +108,7 @@ namespace Automation
                     using_color: Color.Black
                     )));
             this.main_panel.search_panel_control("back_button_panel")[0].add(new ControlButton(
+                addres: new byte[1],
                 dock_style: DockStyle.Left,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -143,18 +163,15 @@ namespace Automation
             }
             if (port.IsOpen)
             {
-                main_panel.search_button_control("com_port_close")[0].Visible = true;
-                main_panel.search_button_control("com_port_open")[0].Visible = false;
                 event_text = $"  Порт {port.PortName} открыт";
                 some_event.Invoke(this, e);
+                port.exchange_counter = 10;
             }
         }
 
         void close_port(object sender, MouseEventArgs e)
         {
             port.Close();
-            main_panel.search_button_control("com_port_close")[0].Visible = false;
-            main_panel.search_button_control("com_port_open")[0].Visible = true;
             event_text = $"  Порт {port.PortName} закрыт";
             some_event.Invoke(this, e);
         }

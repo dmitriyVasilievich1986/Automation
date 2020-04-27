@@ -36,13 +36,18 @@ namespace Automation
         private ByteToFloat byte_to_float = new ByteToFloat();
 
         string name;
-        int exchange_counter = 0;
+        public int exchange_counter = 0;
         public byte[] data_transmit;
-        public byte[] data_receive = { };
+        public byte[] data_receive;
+        //public List<byte> data_receive = new List<byte>();
         public byte[] data_interupt;
         public string transmit_array;
         public string receive_array;
-        public List<float> result;
+        public List<float> result = new List<float>();
+        public delegate void PortReceiveHandler(Modbus using_port);
+        public event PortReceiveHandler receive_handler;
+        public delegate void PortTransmitHandler(Modbus using_port);
+        public event PortTransmitHandler transmit_handler;
 
         public Modbus(
             string using_name = "",
@@ -55,6 +60,7 @@ namespace Automation
             this.name = using_name;
             this.DataBits = 8;
             this.DataReceived += new SerialDataReceivedEventHandler(receive);
+            //this.ReceivedBytesThreshold = 1;
         }
 
         private byte[] ModRTU_CRC(byte[] data, int count)
@@ -85,6 +91,9 @@ namespace Automation
 
         public void Transmit(byte[] data_to_send)
         {
+            this.DiscardInBuffer();
+            this.DiscardOutBuffer();
+
             if (!this.IsOpen) return;
 
             if (data_interupt != null)
@@ -92,6 +101,15 @@ namespace Automation
             else
                 data_transmit = ModRTU_CRC(data_to_send, data_to_send.Length);
 
+            switch (data_transmit[1])
+            {
+                case 0x02:
+                    this.ReceivedBytesThreshold = (data_transmit[5] - 1) / 8 + 6;
+                    break;
+                case 0x04:
+                    this.ReceivedBytesThreshold = data_transmit[5] * 2 + 5;
+                    break;
+            }
             try
             { this.Write(data_transmit, 0, data_transmit.Length); }
             catch (Exception) { return; }
@@ -101,6 +119,8 @@ namespace Automation
 
             if (exchange_counter <= 10)
                 exchange_counter++;
+
+            transmit_handler.Invoke(this);
         }
 
         public void set_interrupt(byte[] data)
@@ -116,15 +136,27 @@ namespace Automation
             else
                 exchange_counter--;
 
+            data_receive = new byte[this.ReceivedBytesThreshold];
+
             try
-                { this.Read(data_receive, 0, this.BytesToRead); }
+                { this.Read(data_receive, 0, this.ReceivedBytesThreshold); }
             catch (Exception) { return; }
 
             if (data_receive.Length < 3) return;
-            if (ModRTU_CRC(data_receive, data_receive.Length - 2) != data_receive) return;
+            //////if (ModRTU_CRC(data_receive, data_receive.Count - 2) != data_receive) return;
+            if (ModRTU_CRC(data_receive, data_receive.Length - 2)[data_receive.Length - 2] != data_receive[data_receive.Length - 2] ||
+                ModRTU_CRC(data_receive, data_receive.Length - 1)[data_receive.Length - 1] != data_receive[data_receive.Length - 1]) return;
 
             receive_array = "Прием: ";
             foreach (byte a in data_receive) receive_array += a.ToString("X2") + " ";
+
+            if (data_receive[1] == 0x04)
+            {
+                result.Clear();
+                for (int item = 0; item < data_receive[2] / 4; item++)
+                    result.Add(byte_to_float.Out(data_receive[3 + item * 4], data_receive[4 + item * 4], data_receive[5 + item * 4], data_receive[6 + item * 4]));
+            }
+            receive_handler.Invoke(this);
         }
     }
 }

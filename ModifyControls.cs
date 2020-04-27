@@ -87,17 +87,26 @@ namespace Automation
 
         ToolTip button_tooltip;
         public string button_description = "";
+        public string result_text = "";
         public float result = 0;
         public ButtonConstructor[] menuing;
+        public string port_name;
+        public DataAddress module;
+        public byte[] addres = new byte[2];
+        Color start_color;
+
 
         public ControlButton(
+            byte[] addres,
             DockStyle dock_style = DockStyle.Top,
             ControlConstructor using_button_constructor = null,
             ControlConstructor using_button_text_constructor = null,
+            DataAddress module = null,
             int using_width = 100,
             int using_height = 100,
             string using_text = "",
             string using_name = "",
+            string using_port_name = "",
             string using_description = "",
             Delegate using_delegate = null,
             ToolTip using_tooltip = null,
@@ -105,6 +114,9 @@ namespace Automation
             bool hide_panel = true
         )
         {
+            this.addres = addres;
+            this.result_text = using_text;
+            this.port_name = using_port_name;
             this.MouseDown += (MouseEventHandler)using_delegate;
             this.Width = using_width;
             this.Height = using_height;
@@ -117,10 +129,14 @@ namespace Automation
             this.TextAlign = ContentAlignment.MiddleLeft;
             this.FlatAppearance.BorderSize = 0;
             this.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            if (module != null) this.module = module;
             if (using_button_constructor != null)
             {
                 if (using_button_constructor.control_color != null)
+                {
                     this.BackColor = using_button_constructor.control_color;
+                    this.start_color = using_button_constructor.control_color;
+                }
                 if (using_button_constructor.control_padding != null)
                     this.Padding = using_button_constructor.control_padding;
             }
@@ -148,7 +164,7 @@ namespace Automation
             if (constructor.text_color != null) ForeColor = constructor.text_color;
             Width = constructor.width;
             Height = constructor.height;
-            Name= constructor.name;
+            Name = constructor.name;
             Text = constructor.text;
             button_description = constructor.description;
             this.MouseDown += (MouseEventHandler)constructor.new_delegate;
@@ -157,7 +173,20 @@ namespace Automation
         public float Result
         {
             get { return this.result; }
-            set { this.result = value; }
+            set
+            {
+                this.result = value;
+                BeginInvoke((MethodInvoker)(() =>
+                {
+                    this.Text = this.result_text + value.ToString();
+                }));                
+            }
+        }
+
+        public void check_result(byte[] using_addres, float new_value)
+        {
+            if (using_addres[0] != module.Addres || addres[0] != using_addres[1] || addres[1] != using_addres[2]) return;
+            Result = new_value;
         }
     }
 
@@ -263,6 +292,33 @@ namespace Automation
             {
                 panel_tooltip.SetToolTip(this, "asd");
             }
+        }
+    }
+
+    public class AllSettings
+    {
+        public DataAddress dout_din16 = new DataAddress(20);
+        public DataAddress dout_din32 = new DataAddress(21);
+        public DataAddress dout_control = new DataAddress(19);
+        public DataAddress mtu5 = new DataAddress(16);
+        public DataAddress psc = new DataAddress(17);
+    }
+
+    public class ButtonValue
+    {
+        public byte[] addres;
+        public string port_name;
+        public byte module;
+
+        public ButtonValue(
+            byte[] addres,
+            string port_name,
+            byte module
+            )
+        {
+            this.module = module;
+            this.addres = addres;
+            this.port_name = port_name;
         }
     }
 }
