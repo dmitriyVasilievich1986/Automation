@@ -18,6 +18,7 @@ namespace Automation
         Settings settings_form;
         MainTMWindow main_tm_window;
         bool cntr_key_pressed = false;
+        List<string> admin_text = new List<string>();
 
         ControlPanel main_panel;
         ControlPanel control_panel;
@@ -309,7 +310,7 @@ namespace Automation
 
         void all_form_load()
         {
-            main_tm_window = new MainTMWindow();
+            main_tm_window = new MainTMWindow(module_settings);
             child_form_panel.Controls.Add(main_tm_window);
             main_tm_window.Show();
         }
@@ -483,6 +484,21 @@ namespace Automation
                 case Keys.ControlKey:
                     cntr_key_pressed = true;
                     break;
+                case Keys.A:
+                    if (cntr_key_pressed)
+                        admin_text.Add("a");
+                    break;
+                case Keys.D:
+                    if (cntr_key_pressed)
+                        admin_text.Add("d");
+                    if (string.Join("", admin_text) == "ad")
+                    {
+                        List<ControlButton> all_buttons = main_panel.search_button_control();
+                        all_buttons.AddRange(main_tm_window.main_panel.search_button_control());
+                        AllButtonTable all_button_table = new AllButtonTable(all_buttons);
+                        all_button_table.Show();
+                    }
+                    break;
                 case Keys.Z:
                     if(cntr_key_pressed)
                     {
@@ -506,6 +522,9 @@ namespace Automation
                         }
                     }
                     break;
+                default:
+                    admin_text.Clear();
+                    break;
             }
         }
 
@@ -515,6 +534,7 @@ namespace Automation
             {
                 case Keys.ControlKey:
                     cntr_key_pressed = false;
+                    admin_text.Clear();
                     break;
             }
         }

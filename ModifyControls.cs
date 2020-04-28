@@ -99,8 +99,8 @@ namespace Automation
             DockStyle dock_style = DockStyle.Top,
             ControlConstructor using_button_constructor = null,
             ControlConstructor using_button_text_constructor = null,
-            int using_width = 100,
-            int using_height = 100,
+            int using_width = 350,
+            int using_height = 55,
             string using_text = "",
             string using_name = "",
             string using_description = "",
@@ -218,6 +218,7 @@ namespace Automation
             int using_width = 100,
             int using_height = 100,
             string using_name = "",
+            bool using_auto_scroll = false,
             ToolTip using_tooltip = null,
             bool using_float_height = false,
             bool hide_panel = true )
@@ -228,6 +229,7 @@ namespace Automation
             this.Dock = dock_style;
             this.Name = using_name;
             this.Visible = hide_panel;
+            this.AutoScroll = using_auto_scroll;
             if (using_panel_constructor != null){
                 if (using_panel_constructor.control_color != null)
                     this.BackColor = using_panel_constructor.control_color;

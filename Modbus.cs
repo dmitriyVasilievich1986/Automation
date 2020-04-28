@@ -60,7 +60,6 @@ namespace Automation
             this.name = using_name;
             this.DataBits = 8;
             this.DataReceived += new SerialDataReceivedEventHandler(receive);
-            //this.ReceivedBytesThreshold = 1;
         }
 
         private byte[] ModRTU_CRC(byte[] data, int count)

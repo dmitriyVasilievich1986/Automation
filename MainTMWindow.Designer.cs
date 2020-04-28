@@ -28,10 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // MainTMWindow
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.BackColor = System.Drawing.Color.Black;
+            this.ClientSize = new System.Drawing.Size(1856, 893);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Name = "MainTMWindow";
+            this.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.Text = "MainTMWindow";
+            this.TopLevel = false;
+            this.ResumeLayout(false);
+
         }
 
         #endregion
