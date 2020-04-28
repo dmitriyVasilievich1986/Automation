@@ -85,6 +85,7 @@
             this.Controls.Add(this.btn_minimize_application);
             this.Controls.Add(this.btn_close_application);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(1400, 750);
             this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(10, 60, 10, 10);

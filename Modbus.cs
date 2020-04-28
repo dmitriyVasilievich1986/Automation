@@ -35,7 +35,7 @@ namespace Automation
     {
         private ByteToFloat byte_to_float = new ByteToFloat();
 
-        string name;
+        public string name;
         public int exchange_counter = 0;
         public byte[] data_transmit;
         public byte[] data_receive;
@@ -97,7 +97,10 @@ namespace Automation
             if (!this.IsOpen) return;
 
             if (data_interupt != null)
+            {
                 data_transmit = ModRTU_CRC(data_interupt, data_interupt.Length);
+                data_interupt = null;
+            }
             else
                 data_transmit = ModRTU_CRC(data_to_send, data_to_send.Length);
 
@@ -143,9 +146,9 @@ namespace Automation
             catch (Exception) { return; }
 
             if (data_receive.Length < 3) return;
-            //////if (ModRTU_CRC(data_receive, data_receive.Count - 2) != data_receive) return;
             if (ModRTU_CRC(data_receive, data_receive.Length - 2)[data_receive.Length - 2] != data_receive[data_receive.Length - 2] ||
                 ModRTU_CRC(data_receive, data_receive.Length - 1)[data_receive.Length - 1] != data_receive[data_receive.Length - 1]) return;
+
 
             receive_array = "Прием: ";
             foreach (byte a in data_receive) receive_array += a.ToString("X2") + " ";

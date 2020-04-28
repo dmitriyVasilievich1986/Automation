@@ -40,4 +40,22 @@ namespace Automation
             get { return addres; }
         }
     }
+
+    public class CheckButtonClass
+    {
+        public DataAddress module;
+        public byte[] address;
+        public string port;
+
+        public CheckButtonClass(
+            DataAddress module,
+            byte[] address,
+            string port
+            )
+        {
+            this.module = module;
+            this.address = address;
+            this.port = port;
+        }
+    }
 }

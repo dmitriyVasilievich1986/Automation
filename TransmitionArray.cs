@@ -17,6 +17,8 @@ namespace Automation
         {
             InitializeComponent();
 
+            this.Text = port.name;
+
             FormClosing += (s, e) => { Dispose(); };
 
             port.receive_handler += (p) =>

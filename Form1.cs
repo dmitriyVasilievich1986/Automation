@@ -17,6 +17,7 @@ namespace Automation
         Point LastPoint;
         Settings settings_form;
         MainTMWindow main_tm_window;
+        bool cntr_key_pressed = false;
 
         ControlPanel main_panel;
         ControlPanel control_panel;
@@ -24,6 +25,7 @@ namespace Automation
 
         TextBox condition_tb;
         TransmitionArray port1;
+        TransmitionArray port2;
 
         Modbus port_control = new Modbus(using_port_name: Properties.Settings.Default.port1, using_name: "Control Port");
         Modbus port_chanel_a = new Modbus(using_port_name: Properties.Settings.Default.port2, using_name: "Module Port");
@@ -43,6 +45,17 @@ namespace Automation
             condition_tb.Text += "    Форма загружена успешно" + Environment.NewLine;
             new_task_run();
             port_initialization();
+            this.KeyDown += form_key_down;
+            this.KeyUp += form_key_up;
+            condition_tb.TextChanged += (s, e) =>
+            {
+                BeginInvoke((MethodInvoker)(() =>
+                {
+                    //condition_tb.Lines = Data_Update.ToArray();
+                    condition_tb.SelectionStart = condition_tb.Text.Length;
+                    condition_tb.ScrollToCaret();
+                }));
+            };
         }
 
         #region initialization
@@ -51,7 +64,6 @@ namespace Automation
         {
             port_control.receive_handler += port_control_receive;
             port1 = new TransmitionArray(port_control);
-            port1.Show();
         }
 
         private void initialize_form_comtrol()
@@ -119,7 +131,6 @@ namespace Automation
                 using_name: "module"
                 ));
             control_panel.search_panel_control("module")[0].add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -129,7 +140,6 @@ namespace Automation
                 using_height: 55
                 ));
             control_panel.search_panel_control("module")[0].add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -139,7 +149,6 @@ namespace Automation
                 using_height: 55
                 ));
             control_panel.add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(44, 62, 80),
@@ -164,7 +173,6 @@ namespace Automation
                 using_name: "com_ports"
                 ));
             control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -195,7 +203,6 @@ namespace Automation
                 using_height: 55
                 ));
             control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -226,7 +233,6 @@ namespace Automation
                 using_height: 55
                 ));
             control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -257,7 +263,6 @@ namespace Automation
                 using_height: 55
                 ));
             control_panel.search_panel_control("com_ports")[0].add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -288,7 +293,6 @@ namespace Automation
                 using_height: 55
                 ));
             control_panel.add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(44, 62, 80),
@@ -333,20 +337,12 @@ namespace Automation
             condition_tb.Enabled = true;
             condition_tb.Dock = DockStyle.Fill;
             condition_tb.Multiline = true;
+            condition_tb.Enabled = false;
             condition_tb.ScrollBars = ScrollBars.Vertical;
             condition_tb.BackColor = Color.LightGray;
-            condition_tb.ForeColor = Color.Black;
-            //condition_tb.TextChanged += (s, e) =>
-            //{
-            //    BeginInvoke((MethodInvoker)(() =>
-            //    {
-            //        //condition_tb.Lines = Data_Update.ToArray();
-            //        condition_tb.SelectionStart = condition_tb.Text.Length;
-            //        condition_tb.ScrollToCaret();
-            //    }));
-            //};
+            condition_tb.ForeColor = Color.Black;            
             condition_tb.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            main_panel.search_panel_control("condition_panel")[0].Controls.Add(condition_tb);
+            main_panel.search_panel_control("condition_panel")[0].Controls.Add(condition_tb);            
 
             // **** mtu condition panel **** //
 
@@ -359,9 +355,12 @@ namespace Automation
                     using_padding: new Padding(0, 0, 10, 0))
                 ));
             main_panel.search_panel_control("mtu_condition_panel")[0].add(new ControlButton(
-                addres: new byte[1],
                 using_name: "mtu_220v_tu",
                     using_text: "Напряжение ТУ: ",
+                    value_data_sending: new CheckButtonClass(
+                        module: module_settings.mtu5,
+                        address: new byte[2] { 0x01, 0x08 },
+                        port: "Control Port"),
                     using_button_constructor: new ControlConstructor(
                         using_color: Color.Gray,
                         using_padding: new Padding(40, 0, 0, 0)
@@ -370,9 +369,12 @@ namespace Automation
                     dock_style: DockStyle.Top
                 ));
             main_panel.search_panel_control("mtu_condition_panel")[0].add(new ControlButton(
-                addres: new byte[1],
                 using_name: "mtu_tc_12v",
                 using_text: "ТС 12В канал 2: ",
+                value_data_sending: new CheckButtonClass(
+                        module: module_settings.mtu5,
+                        address: new byte[2] { 0x01, 0x0c },
+                        port: "Control Port"),
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.Gray,
                     using_padding: new Padding(40, 0, 0, 0)
@@ -381,11 +383,12 @@ namespace Automation
                 dock_style: DockStyle.Top
                 ));
             main_panel.search_panel_control("mtu_condition_panel")[0].add(new ControlButton(
-                addres: new byte[2] { 0x01, 0x08},
-                module: module_settings.mtu5,
+                value_data_sending: new CheckButtonClass(
+                    module: module_settings.mtu5,
+                    address: new byte[2] { 0x01, 0x0a},
+                    port: "Control Port"),     
                 using_name: "mtu_tc_12v",
                 using_text: "ТС 12В канал 1: ",
-                using_port_name: "Control Port",
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.Gray,
                     using_padding: new Padding(40, 0, 0, 0)
@@ -409,7 +412,6 @@ namespace Automation
             for (int a = 0; a < 4; a++)
             {
                 main_panel.search_panel_control("power_panel")[0].add(new ControlButton(
-                    addres: new byte[1],
                     using_name: "power_button",
                     using_text: $"Питание канал {4 - a}",
                     using_description: $"    Кнопка питания {4 - a} канала. Подает и выключает питание с соответсвующего канала питания стенда.",
@@ -417,8 +419,17 @@ namespace Automation
                         using_color: Color.Gray,
                         using_padding: new Padding(40, 0, 0, 0)
                         ),
+                    color_data_sending: new CheckButtonClass(
+                    module: module_settings.dout_control,
+                    address: new byte[2] { 0x00, (byte)(0x09 + a) },                    
+                    port: "Control Port"
+                    ),
+                    send_data: new DataSending(
+                        using_addres: module_settings.dout_control,
+                        new byte[] { 0x01, 0x06, 0x00, (byte)(0x59+a), 0x00, 0x01}
+                        ),
                     using_height: 55,
-                    using_delegate: new MouseEventHandler(open_form_with_dialog),
+                    using_delegate: new MouseEventHandler(port_control_sending_data_button),
                     dock_style: DockStyle.Top
                     ));
             }
@@ -428,10 +439,10 @@ namespace Automation
         {
             send_control_port = new Dictionary<string, DataSending>()
             {
-                //{ "DOUT16 din16", new DataSending(module_settings.dout_din16, new byte[]{ 0x00, 0x02, 0x00, 0x01, 0x00, 0x10 }) },
-                //{ "DOUT16 din32", new DataSending(module_settings.dout_din32, new byte[]{ 0x00, 0x02, 0x00, 0x01, 0x00, 0x10 }) },
-                //{ "DOUT16 control", new DataSending(module_settings.dout_control, new byte[]{ 0x00, 0x02, 0x00, 0x01, 0x00, 0x10 }) },
-                //{ "psc", new DataSending(module_settings.psc, new byte[]{ 0x00, 0x04, 0x01, 0x0a, 0x00, 0x04 }) },
+                { "DOUT16 din16", new DataSending(module_settings.dout_din16, new byte[]{ 0x00, 0x02, 0x00, 0x01, 0x00, 0x10 }) },
+                { "DOUT16 din32", new DataSending(module_settings.dout_din32, new byte[]{ 0x00, 0x02, 0x00, 0x01, 0x00, 0x10 }) },
+                { "DOUT16 control", new DataSending(module_settings.dout_control, new byte[]{ 0x00, 0x02, 0x00, 0x01, 0x00, 0x10 }) },
+                { "psc", new DataSending(module_settings.psc, new byte[]{ 0x00, 0x04, 0x01, 0x0a, 0x00, 0x04 }) },
                 { "rf mtu", new DataSending(module_settings.mtu5, new byte[]{ 0x00, 0x02, 0x00, 0x0f, 0x00, 0x01 }) },
                 { "проверка ту и 12в mtu", new DataSending(module_settings.mtu5, new byte[]{ 0x00, 0x04, 0x01, 0x08, 0x00, 0x06 }) }
             };
@@ -454,7 +465,7 @@ namespace Automation
                                     condition_tb.Text += error.Message + Environment.NewLine;
                                 }));
                             }
-                            await Task.Delay(1000);
+                            await Task.Delay(100);
                         }
                     }
                     else
@@ -465,7 +476,58 @@ namespace Automation
             });
         }
 
+        void form_key_down(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.ControlKey:
+                    cntr_key_pressed = true;
+                    break;
+                case Keys.Z:
+                    if(cntr_key_pressed)
+                    {
+                        port1.Show();
+                        //if (port1 == null)
+                        //{
+                        //    port1 = new TransmitionArray(port_control);
+                        //    port1.FormClosing += (a, b) => { port1 = null; };
+                        //    port1.Show();
+                        //}
+                    }
+                    break;
+                case Keys.X:
+                    if(cntr_key_pressed)
+                    {
+                        if (port2 == null)
+                        {
+                            port2 = new TransmitionArray(port_chanel_a);
+                            port2.FormClosing += (a, b) => { port2 = null; };
+                            port2.Show();
+                        }
+                    }
+                    break;
+            }
+        }
+
+        void form_key_up(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.ControlKey:
+                    cntr_key_pressed = false;
+                    break;
+            }
+        }
+
         #endregion
+
+        void port_control_sending_data_button(object sender, MouseEventArgs e)
+        {
+            if (((ControlButton)sender).send_data == null) return;
+            byte[] send = ((ControlButton)sender).send_data.send_data();
+            send[send.Length - 1] = ((ControlButton)sender).button_on_off();
+            port_control.set_interrupt(send);
+        }
 
         private void hide_control_panel(object sender, MouseEventArgs e)
         {
@@ -587,36 +649,39 @@ namespace Automation
         public void port_control_receive(Modbus using_port)
         {
             if (using_port.data_receive[1] != 0x02 && using_port.data_receive[1] != 0x04) return;
-            List<ControlButton> all_button = main_panel.search_button_control().FindAll(x => x.port_name == "Control Port");
             byte[] checkout = new byte[3] { using_port.data_transmit[0], using_port.data_transmit[2], using_port.data_transmit[3] };
-            //BeginInvoke((MethodInvoker)(() =>
-            //{
-            //    condition_tb.Text += checkout[0].ToString("X2") + "/" + checkout[1].ToString("X2")  + Environment.NewLine;
-            //    condition_tb.Text += using_port.data_transmit[0].ToString("X2") + "/" + using_port.data_transmit[1].ToString("X2") + "/" + using_port.data_transmit[2].ToString("X2") + "/" + using_port.data_transmit[3].ToString("X2") + Environment.NewLine;
-            //}));
+            List<ControlButton> all_button;
 
             if (using_port.data_receive[1] == 0x04) 
             {
+                all_button = main_panel.search_button_control().FindAll(x => x.value_data_sending != null && x.value_data_sending.port == "Control Port");
                 for (int a = 0; a < using_port.data_receive[2] / 2; a += 2) 
                 {
                     for (int item = 0; item < all_button.Count; item++)
                     {
-                        all_button[item].check_result(checkout, using_port.result[a / 2]);
+                        all_button[item].check_value_result(checkout, using_port.result[a / 2]);
                     }
-                    checkout[1] += 2;
+                    checkout[2] += 2;
                 }
             }
-            
-            //for (int a = 0; a < length; a++)
-            //{
-
-            //    for (int item = 0; item < all_button.Count; item++)
-            //    {
-            //        if (checkout[1] == 0x04)
-            //            all_button[item].check_result(checkout, using_port.result[a]);
-            //    }
-            //}
-
+            else if(using_port.data_receive[1] == 0x02)
+            {
+                all_button = main_panel.search_button_control().FindAll(x => x.color_data_sending != null && x.color_data_sending.port == "Control Port");
+                for (int loop1 = 0; loop1 < using_port.data_receive[2]; loop1++)
+                {
+                    for (int loop2 = 0; loop2 < 2; loop2++)
+                    {
+                        for(int loop3 = 0; loop3 < 4; loop3++)
+                        {
+                            for (int item = 0; item < all_button.Count; item++)
+                            {
+                                all_button[item].check_color_result(checkout, using_port.data_receive[loop1 + 3] & (1 << (loop3 + loop2 * 4)));
+                            }
+                            checkout[2] += 1;
+                        }
+                    }
+                }
+            }
         }
 
         public void color_button(ControlButton button, int result)

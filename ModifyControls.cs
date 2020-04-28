@@ -90,32 +90,30 @@ namespace Automation
         public string result_text = "";
         public float result = 0;
         public ButtonConstructor[] menuing;
-        public string port_name;
-        public DataAddress module;
-        public byte[] addres = new byte[2];
+        public CheckButtonClass color_data_sending;
+        public CheckButtonClass value_data_sending;
         public Color start_color;
+        public DataSending send_data;
 
         public ControlButton(
-            byte[] addres,
             DockStyle dock_style = DockStyle.Top,
             ControlConstructor using_button_constructor = null,
             ControlConstructor using_button_text_constructor = null,
-            DataAddress module = null,
             int using_width = 100,
             int using_height = 100,
             string using_text = "",
             string using_name = "",
-            string using_port_name = "",
             string using_description = "",
             Delegate using_delegate = null,
             ToolTip using_tooltip = null,
             ButtonConstructor[] using_menu = null,
-            bool hide_panel = true
+            bool hide_panel = true,
+            CheckButtonClass color_data_sending = null,
+            CheckButtonClass value_data_sending = null,
+            DataSending send_data = null
         )
         {
-            this.addres = addres;
             this.result_text = using_text;
-            this.port_name = using_port_name;
             this.MouseDown += (MouseEventHandler)using_delegate;
             this.Width = using_width;
             this.Height = using_height;
@@ -128,7 +126,6 @@ namespace Automation
             this.TextAlign = ContentAlignment.MiddleLeft;
             this.FlatAppearance.BorderSize = 0;
             this.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            if (module != null) this.module = module;
             if (using_button_constructor != null)
             {
                 if (using_button_constructor.control_color != null)
@@ -148,6 +145,12 @@ namespace Automation
                 menuing = using_menu;
             if (using_tooltip != null)
                 button_tooltip = using_tooltip;
+            if (color_data_sending != null)
+                this.color_data_sending = color_data_sending;
+            if (value_data_sending != null)
+                this.value_data_sending = value_data_sending;
+            if (send_data != null)
+                this.send_data = send_data;
         }
 
         public ControlButton(ButtonConstructor constructor)
@@ -182,15 +185,21 @@ namespace Automation
             }
         }
 
-        public void check_result(byte[] using_addres, float new_value)
+        public void check_value_result(byte[] using_addres, float new_value)
         {
-            if (using_addres[0] != module.Addres || addres[0] != using_addres[1] || addres[1] != using_addres[2]) return;
+            if (value_data_sending == null || value_data_sending.module.Addres != using_addres[0] || value_data_sending.address[0] != using_addres[1] || value_data_sending.address[1] != using_addres[2]) return;
             Result = new_value;
         }
 
-        public void button_color(int change_color)
+        public void check_color_result(byte[] using_addres, int change_color)
         {
-            this.BackColor = change_color == 1 ? Color.Red : this.start_color;
+            if (color_data_sending == null || color_data_sending.module.Addres != using_addres[0] || color_data_sending.address[0] != using_addres[1] || color_data_sending.address[1] != using_addres[2]) return;
+            this.BackColor = change_color != 0 ? Color.Red : this.start_color;
+        }
+
+        public byte button_on_off()
+        {
+            return this.BackColor == Color.Red ? (byte)0x00 : (byte)0x01;
         }
     }
 

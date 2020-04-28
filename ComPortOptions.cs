@@ -67,7 +67,6 @@ namespace Automation
                     using_padding: new Padding(0, 50, 10, 0)
                     )));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
-                addres: new byte[1],
                 using_name: "com_port_open",
                 using_delegate: new MouseEventHandler(open_port),
                 using_text: "Открыть порт",
@@ -78,7 +77,6 @@ namespace Automation
                     using_padding: new Padding(40, 0, 0, 0))
                 ));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
-                addres: new byte[1],
                 using_name: "com_port_close",
                 using_text: "Закрыть порт",
                 using_delegate: new MouseEventHandler(close_port),
@@ -89,7 +87,6 @@ namespace Automation
                     using_padding: new Padding(40, 0, 0, 0))
                 ));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
-                addres: new byte[1],
                 using_name: "com_port_addres",
                 using_text: port.PortName,
                 using_delegate: new MouseEventHandler(choose_com_port_name),
@@ -108,7 +105,6 @@ namespace Automation
                     using_color: Color.Black
                     )));
             this.main_panel.search_panel_control("back_button_panel")[0].add(new ControlButton(
-                addres: new byte[1],
                 dock_style: DockStyle.Left,
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
