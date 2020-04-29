@@ -180,7 +180,7 @@ namespace Automation
                 this.result = value;
                 BeginInvoke((MethodInvoker)(() =>
                 {
-                    this.Text = this.result_text + value.ToString();
+                    this.Text = this.result_text + Math.Round(value, 3).ToString();
                 }));                
             }
         }
@@ -245,7 +245,7 @@ namespace Automation
         public void set_height()
         {
             if (!float_height) return;
-            this.Height = this.Padding.Top;
+            this.Height = this.Padding.Top + this.Padding.Bottom;
             foreach(ControlButton cb in search_button_control())
             {
                 this.Height += cb.Height;
@@ -317,6 +317,28 @@ namespace Automation
         public DataAddress dout_control = new DataAddress(19);
         public DataAddress mtu5 = new DataAddress(16);
         public DataAddress psc = new DataAddress(17);
+        public DataAddress module = new DataAddress(1);
+
+        public List<CheckButtonClass> din16;
+
+        public AllSettings()
+        {
+            din16 = new List<CheckButtonClass>();
+            for(int a = 0; a < 16; a++)
+            {
+                din16.Add(new CheckButtonClass(
+                    module: this.module,
+                    address: new byte[2] { 0,0},
+                    port: "Module Port"
+                    ));
+            }
+        }
+    }
+
+    public class ModuleParameters
+    {
+        public string name;
+        public Dictionary<string, byte[]> addres;
     }
 
     public class ButtonValue

@@ -310,7 +310,7 @@ namespace Automation
 
         void all_form_load()
         {
-            main_tm_window = new MainTMWindow(module_settings);
+            main_tm_window = new MainTMWindow(module_settings, new MouseEventHandler(port_control_sending_data_button));
             child_form_panel.Controls.Add(main_tm_window);
             main_tm_window.Show();
         }
@@ -539,6 +539,11 @@ namespace Automation
             }
         }
 
+        void list_of_all_modules()
+        {
+            
+        }
+
         #endregion
 
         void port_control_sending_data_button(object sender, MouseEventArgs e)
@@ -675,6 +680,7 @@ namespace Automation
             if (using_port.data_receive[1] == 0x04) 
             {
                 all_button = main_panel.search_button_control().FindAll(x => x.value_data_sending != null && x.value_data_sending.port == "Control Port");
+                all_button.AddRange(main_tm_window.main_panel.search_button_control().FindAll(x => x.value_data_sending != null && x.value_data_sending.port == "Control Port"));
                 for (int a = 0; a < using_port.data_receive[2] / 2; a += 2) 
                 {
                     for (int item = 0; item < all_button.Count; item++)
@@ -687,6 +693,7 @@ namespace Automation
             else if(using_port.data_receive[1] == 0x02)
             {
                 all_button = main_panel.search_button_control().FindAll(x => x.color_data_sending != null && x.color_data_sending.port == "Control Port");
+                all_button.AddRange(main_tm_window.main_panel.search_button_control().FindAll(x => x.color_data_sending != null && x.color_data_sending.port == "Control Port"));
                 for (int loop1 = 0; loop1 < using_port.data_receive[2]; loop1++)
                 {
                     for (int loop2 = 0; loop2 < 2; loop2++)

@@ -39,7 +39,6 @@ namespace Automation
         public int exchange_counter = 0;
         public byte[] data_transmit;
         public byte[] data_receive;
-        //public List<byte> data_receive = new List<byte>();
         public byte[] data_interupt;
         public string transmit_array;
         public string receive_array;
@@ -112,15 +111,16 @@ namespace Automation
                     this.ReceivedBytesThreshold = data_transmit[5] * 2 + 5;
                     break;
             }
+
+            if (exchange_counter <= 10)
+                exchange_counter++;
+
             try
             { this.Write(data_transmit, 0, data_transmit.Length); }
             catch (Exception) { return; }
 
             transmit_array = "Передача: ";
             foreach (byte item in data_transmit) transmit_array += item.ToString("X2") + " ";
-
-            if (exchange_counter <= 10)
-                exchange_counter++;
 
             transmit_handler.Invoke(this);
         }
@@ -133,7 +133,7 @@ namespace Automation
 
         public void receive(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            if (exchange_counter >= 10)
+            if (exchange_counter >= 5)
                 exchange_counter = 0;
             else
                 exchange_counter--;

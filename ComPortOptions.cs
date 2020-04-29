@@ -160,8 +160,8 @@ namespace Automation
             if (port.IsOpen)
             {
                 event_text = $"  Порт {port.PortName} открыт";
+                port.exchange_counter = 20;
                 some_event.Invoke(this, e);
-                port.exchange_counter = 10;
             }
         }
 

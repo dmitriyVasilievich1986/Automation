@@ -42,3 +42,5 @@ C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.Transmiti
 C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.TransmitionArray.resources
 C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.AllButtonTable.resources
 C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.MainTMWindow.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.AllButtonTable.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.MainTMWindow.resources
