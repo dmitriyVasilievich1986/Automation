@@ -37,13 +37,12 @@
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1856, 893);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Name = "MainTMWindow";
             this.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.Text = "MainTMWindow";
+            this.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TopLevel = false;
             this.ResumeLayout(false);
-
         }
 
         #endregion

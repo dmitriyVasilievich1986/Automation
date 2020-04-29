@@ -25,6 +25,7 @@ namespace Automation
             fill_left_panel();
             fill_right_panle();
             all_button_style();
+            this.FormClosing += (s, e) => { this.Dispose(); };
         }
 
         void main_panel_add()
@@ -77,7 +78,7 @@ namespace Automation
                     using_addres: module_settings.dout_din16,
                     using_data: new byte[] { 0x01, 0x06, 0x00, (byte)(0x60-a), 0x00, 0x00 }
                     ),
-                value_data_sending: module_settings.din16[a],
+                value_data_sending: module_settings.AllAddres.din16[a],
                 color_data_sending: new CheckButtonClass(
                     module: module_settings.dout_din16,
                     address: new byte[2] { 0x00, (byte)(16-a) },

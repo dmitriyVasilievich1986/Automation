@@ -19,6 +19,7 @@ namespace Automation
         MainTMWindow main_tm_window;
         bool cntr_key_pressed = false;
         List<string> admin_text = new List<string>();
+        List<ModuleParameters> all_addres;
 
         ControlPanel main_panel;
         ControlPanel control_panel;
@@ -39,6 +40,7 @@ namespace Automation
         public MainForm()
         {
             InitializeComponent();
+            list_of_all_modules();
             initialize_form_comtrol();
             control_init();
             load_condition_panel();
@@ -131,24 +133,17 @@ namespace Automation
                     using_padding: new Padding(20, 0, 0, 0)),
                 using_name: "module"
                 ));
-            control_panel.search_panel_control("module")[0].add(new ControlButton(
-                dock_style: DockStyle.Top,
+            foreach(ModuleParameters mp in all_addres)
+            {
+                control_panel.search_panel_control("module")[0].add(new ControlButton(
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
-                using_name: "test",
-                using_text: "test",
-                using_height: 55
+                using_delegate: new MouseEventHandler(change_module),
+                using_name: mp.module_name,
+                using_text: mp.module_name
                 ));
-            control_panel.search_panel_control("module")[0].add(new ControlButton(
-                dock_style: DockStyle.Top,
-                using_button_constructor: new ControlConstructor(
-                    using_color: Color.FromArgb(113, 125, 137),
-                    using_padding: new Padding(40, 0, 0, 0)),
-                using_name: "test",
-                using_text: "test",
-                using_height: 55
-                ));
+            }
             control_panel.add(new ControlButton(
                 dock_style: DockStyle.Top,
                 using_button_constructor: new ControlConstructor(
@@ -493,6 +488,7 @@ namespace Automation
                         admin_text.Add("d");
                     if (string.Join("", admin_text) == "ad")
                     {
+                        cntr_key_pressed = false;
                         List<ControlButton> all_buttons = main_panel.search_button_control();
                         all_buttons.AddRange(main_tm_window.main_panel.search_button_control());
                         AllButtonTable all_button_table = new AllButtonTable(all_buttons);
@@ -541,7 +537,13 @@ namespace Automation
 
         void list_of_all_modules()
         {
-            
+            all_addres = new List<ModuleParameters>();
+            all_addres.Add(new ModuleParameters("Test"));
+            all_addres.Add(new ModuleParameters("RTU5"));
+            for(int a = 0; a < 16; a++)
+            {
+                all_addres.Find(x => x.module_name == "RTU5").din16[a].address = new byte[2] { 0, (byte)a };
+            }
         }
 
         #endregion
@@ -714,6 +716,15 @@ namespace Automation
         public void color_button(ControlButton button, int result)
         {
             button.BackColor = result == 1 ? Color.Red : button.start_color;
+        }
+
+        void change_module(object sender, MouseEventArgs e)
+        {
+            main_tm_window.Close();
+            module_settings.AllAddres = all_addres.Find(x => x.module_name == ((ControlButton)sender).Name);
+            main_tm_window = new MainTMWindow(module_settings, new MouseEventHandler(port_control_sending_data_button));
+            child_form_panel.Controls.Add(main_tm_window);
+            main_tm_window.Show();
         }
     }
 }

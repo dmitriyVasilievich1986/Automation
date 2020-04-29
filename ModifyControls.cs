@@ -319,26 +319,66 @@ namespace Automation
         public DataAddress psc = new DataAddress(17);
         public DataAddress module = new DataAddress(1);
 
-        public List<CheckButtonClass> din16;
+        ModuleParameters all_addres = new ModuleParameters();
 
-        public AllSettings()
+        public ModuleParameters AllAddres
         {
-            din16 = new List<CheckButtonClass>();
-            for(int a = 0; a < 16; a++)
+            get { return all_addres; }
+            set
             {
-                din16.Add(new CheckButtonClass(
-                    module: this.module,
-                    address: new byte[2] { 0,0},
-                    port: "Module Port"
-                    ));
+                all_addres = value;
+                for(int a = 0; a < 16; a++)
+                {
+                    all_addres.din16[a].module = this.module;
+                    all_addres.din32[a].module = this.module;
+                }
+                for (int a = 0; a < 3; a++)
+                {
+                    all_addres.kf[a].module = this.module;
+                    all_addres.tc[a].module = this.module;
+                }
             }
         }
     }
 
     public class ModuleParameters
     {
-        public string name;
-        public Dictionary<string, byte[]> addres;
+        public string module_name;
+        public List<CheckButtonClass> din16 = new List<CheckButtonClass>();
+        public List<CheckButtonClass> din32 = new List<CheckButtonClass>();
+        public List<CheckButtonClass> kf = new List<CheckButtonClass>();
+        public List<CheckButtonClass> tc = new List<CheckButtonClass>();
+
+        public ModuleParameters(string module_name = "")
+        {
+            this.module_name = module_name;
+            for (int a = 0; a < 16; a++)
+            {
+                din16.Add(new CheckButtonClass(
+                    module: new DataAddress(1),
+                    address: new byte[2] { 0,0},
+                    port: "Module Port"
+                    ));
+                din32.Add(new CheckButtonClass(
+                    module: new DataAddress(1),
+                    address: new byte[2] { 0,0},
+                    port: "Module Port"
+                    ));
+            }
+            for (int a = 0; a < 3; a++)
+            {
+                kf.Add(new CheckButtonClass(
+                    module: new DataAddress(1),
+                    address: new byte[2] { 0,0},
+                    port: "Module Port"
+                    ));
+                tc.Add(new CheckButtonClass(
+                    module: new DataAddress(1),
+                    address: new byte[2] { 0,0},
+                    port: "Module Port"
+                    ));
+            }
+        }
     }
 
     public class ButtonValue
