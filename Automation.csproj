@@ -89,6 +89,7 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="StaticClass.cs" />
     <Compile Include="TransmitionArray.cs">
       <SubType>Form</SubType>
     </Compile>

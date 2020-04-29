@@ -26,6 +26,7 @@ namespace Automation
             fill_right_panle();
             all_button_style();
             this.FormClosing += (s, e) => { this.Dispose(); };
+            this.Shown += (s, e) => { foreach (ControlPanel cp in main_panel.search_panel_control()) cp.set_visible(); };            
         }
 
         void main_panel_add()
@@ -102,6 +103,7 @@ namespace Automation
                 main_panel.search_panel_control("KF Panel")[0].add(new ControlButton(
                     using_name: "kf",
                     using_text: $"KF {(char)('C' - a)}: ",
+                    value_data_sending: module_settings.AllAddres.kf[a],
                     using_delegate: mouse_event_handler,
                     color_data_sending: new CheckButtonClass(
                         module: module_settings.dout_control,
@@ -126,6 +128,7 @@ namespace Automation
                 main_panel.search_panel_control("TC Panel")[0].add(new ControlButton(
                     using_name: "tc",
                     using_text: $"TC {(char)('C' - a)}: ",
+                    value_data_sending: module_settings.AllAddres.tc[a],
                     using_delegate: mouse_event_handler,
                     color_data_sending: new CheckButtonClass(
                         module: module_settings.dout_control,

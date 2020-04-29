@@ -43,6 +43,7 @@
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TopLevel = false;
             this.ResumeLayout(false);
+
         }
 
         #endregion

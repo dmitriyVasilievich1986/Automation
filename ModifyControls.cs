@@ -148,7 +148,11 @@ namespace Automation
             if (color_data_sending != null)
                 this.color_data_sending = color_data_sending;
             if (value_data_sending != null)
+            {
                 this.value_data_sending = value_data_sending;
+                if (value_data_sending.address[0] == 0x0 && value_data_sending.address[1] == 0x0)
+                    this.Visible = false;
+            }
             if (send_data != null)
                 this.send_data = send_data;
         }
@@ -252,6 +256,20 @@ namespace Automation
             }
         }
 
+        public void set_visible()
+        {
+            if (!float_height) return;
+            if (search_button_control().FindAll(x => x.Visible).Count == 0) this.Visible = false;
+            else
+            {
+                this.Visible = true;
+                this.Height = this.Padding.Top + this.Padding.Bottom;
+                foreach (ControlButton cb in search_button_control())
+                    if (cb.Visible)
+                        this.Height += cb.Height;
+            }
+        }
+
         public List<ControlButton> search_button_control(string search_name = "")
         {
             List<ControlButton> output = new List<ControlButton>();
@@ -267,6 +285,10 @@ namespace Automation
                 else if (cb.GetType() == typeof(ControlPanel))
                 {
                     output.AddRange(((ControlPanel)cb).search_button_control(search_name).ToArray());
+                }
+                else if (cb.GetType() == typeof(MainTMWindow))
+                {
+                    output.AddRange(((MainTMWindow)cb).main_panel.search_button_control(search_name).ToArray());
                 }
             }
             return output;
@@ -284,6 +306,10 @@ namespace Automation
                     else if (search_name == "") 
                         output.Add((ControlPanel)cp);
                     output.AddRange(((ControlPanel)cp).search_panel_control(search_name).ToArray());
+                }
+                else if (cp.GetType() == typeof(MainTMWindow))
+                {
+                    output.AddRange(((MainTMWindow)cp).main_panel.search_panel_control(search_name).ToArray());
                 }
             }
             return output;
