@@ -110,7 +110,8 @@ namespace Automation
             bool hide_panel = true,
             CheckButtonClass color_data_sending = null,
             CheckButtonClass value_data_sending = null,
-            DataSending send_data = null
+            DataSending send_data = null,
+            string start_text = ""
         )
         {
             this.result_text = using_text;
@@ -151,10 +152,18 @@ namespace Automation
             {
                 this.value_data_sending = value_data_sending;
                 if (value_data_sending.address[0] == 0x0 && value_data_sending.address[1] == 0x0)
+                {
+                    //if(color_data_sending!=null && value_data_sending.address[0] == 0x0 && value_data_sending.address[1] == 0x0)
+                    //    this.Visible = false;
+                    //else if(color_data_sending == null)
+                    //    this.Visible = false;
                     this.Visible = false;
+                }
             }
             if (send_data != null)
                 this.send_data = send_data;
+            if (start_text != "")
+                Set_Text = start_text;
         }
 
         public ControlButton(ButtonConstructor constructor)
@@ -189,17 +198,23 @@ namespace Automation
             }
         }
 
-        public void check_value_result(byte[] using_addres, float new_value)
+        public void check_value_result(byte[] using_addres, float new_value, string port_name)
         {
-            if (value_data_sending == null || value_data_sending.module.Addres != using_addres[0] || value_data_sending.address[0] != using_addres[1] || value_data_sending.address[1] != using_addres[2]) return;
+            if (value_data_sending == null || value_data_sending.module.Addres != using_addres[0] || value_data_sending.address[0] != using_addres[1] || value_data_sending.address[1] != using_addres[2] || value_data_sending.port != port_name) return;
             Result = new_value;
         }
 
-        public void check_color_result(byte[] using_addres, int change_color)
+        public void check_color_result(byte[] using_addres, int change_color, string port_name)
         {
-            if (color_data_sending == null || color_data_sending.module.Addres != using_addres[0] || color_data_sending.address[0] != using_addres[1] || color_data_sending.address[1] != using_addres[2]) return;
+            if (color_data_sending == null || color_data_sending.module.Addres != using_addres[0] || color_data_sending.address[0] != using_addres[1] || color_data_sending.address[1] != using_addres[2] || color_data_sending.port != port_name) return;
             this.BackColor = change_color != 0 ? Color.Red : this.start_color;
         }
+
+        public string Set_Text
+        {
+            set { this.Text = result_text + value; }
+        }
+
 
         public byte button_on_off()
         {
@@ -363,6 +378,13 @@ namespace Automation
                     all_addres.kf[a].module = this.module;
                     all_addres.tc[a].module = this.module;
                 }
+                for(int a = 0; a < 4; a++)
+                {
+                    all_addres.tu[a].module = this.module;
+                    all_addres.tu_color[a].module = this.module;
+                }
+                foreach(DataSending ds in all_addres.data_to_send)
+                    ds.address = this.module;
             }
         }
     }
@@ -374,6 +396,9 @@ namespace Automation
         public List<CheckButtonClass> din32 = new List<CheckButtonClass>();
         public List<CheckButtonClass> kf = new List<CheckButtonClass>();
         public List<CheckButtonClass> tc = new List<CheckButtonClass>();
+        public List<CheckButtonClass> tu = new List<CheckButtonClass>();
+        public List<CheckButtonClass> tu_color = new List<CheckButtonClass>();
+        public List<DataSending> data_to_send = new List<DataSending>();
 
         public ModuleParameters(string module_name = "")
         {
@@ -391,7 +416,7 @@ namespace Automation
                     port: "Module Port"
                     ));
             }
-            for (int a = 0; a < 3; a++)
+            for (int a = 0; a < 4; a++)
             {
                 kf.Add(new CheckButtonClass(
                     module: new DataAddress(1),
@@ -399,6 +424,16 @@ namespace Automation
                     port: "Module Port"
                     ));
                 tc.Add(new CheckButtonClass(
+                    module: new DataAddress(1),
+                    address: new byte[2] { 0,0},
+                    port: "Module Port"
+                    ));
+                tu.Add(new CheckButtonClass(
+                    module: new DataAddress(1),
+                    address: new byte[2] { 0,0},
+                    port: "Module Port"
+                    ));
+                tu_color .Add(new CheckButtonClass(
                     module: new DataAddress(1),
                     address: new byte[2] { 0,0},
                     port: "Module Port"

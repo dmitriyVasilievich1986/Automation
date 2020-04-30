@@ -8,7 +8,7 @@ namespace Automation
 {
     public class DataSending
     {
-        DataAddress address;
+        public DataAddress address;
         public byte[] data;
 
         public DataSending(DataAddress using_addres, byte[] using_data)
@@ -45,7 +45,7 @@ namespace Automation
     {
         public DataAddress module;
         public byte[] address;
-        public string port;
+        public string port = "";
 
         public CheckButtonClass(
             DataAddress module,

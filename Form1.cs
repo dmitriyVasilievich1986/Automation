@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
+using Newtonsoft.Json;
+using System.IO;
 using System.Threading;
 
 namespace Automation
@@ -19,6 +21,7 @@ namespace Automation
         bool cntr_key_pressed = false;
         List<string> admin_text = new List<string>();
         List<ModuleParameters> all_addres;
+        string this_directory = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
 
         ControlPanel main_panel;
         ControlPanel control_panel;
@@ -44,7 +47,6 @@ namespace Automation
             control_init();
             load_condition_panel();
             condition_tb.Text += "    Форма загружена успешно" + Environment.NewLine;
-            new_task_run();
             port_initialization();
             this.KeyDown += form_key_down;
             this.KeyUp += form_key_up;
@@ -52,12 +54,12 @@ namespace Automation
             {
                 BeginInvoke((MethodInvoker)(() =>
                 {
-                    //condition_tb.Lines = Data_Update.ToArray();
                     condition_tb.SelectionStart = condition_tb.Text.Length;
                     condition_tb.ScrollToCaret();
                 }));
             };
             open_module_form();
+            new_task_run();
         }
 
         #region initialization
@@ -65,10 +67,12 @@ namespace Automation
         void port_initialization()
         {
             port_control.receive_handler += port_control_receive;
+            port_chanel_a.receive_handler += port_control_receive;
             port1 = new TransmitionArray(port_control);
+            port2 = new TransmitionArray(port_chanel_a);
         }
 
-        private void initialize_form_comtrol()
+        void initialize_form_comtrol()
         {
             this.MouseDown += (s, e) => { LastPoint = new System.Drawing.Point(e.X, e.Y); };
             this.MouseMove += (s, e) => {
@@ -91,6 +95,8 @@ namespace Automation
                 Properties.Settings.Default.port3 = port_chanel_b.PortName;
                 Properties.Settings.Default.port4 = port_chanel_c.PortName;
                 Properties.Settings.Default.Save();
+                using (StreamWriter sw = new StreamWriter(this_directory + @"\JSon\" + "all_addres.txt", false, Encoding.UTF8))
+                    sw.Write(JsonConvert.SerializeObject(all_addres));
                 this.Dispose();
             };
             btn_minimize_application.MouseClick += (s, e) => { this.WindowState = FormWindowState.Minimized; };
@@ -102,7 +108,7 @@ namespace Automation
             };
         }
 
-        private void control_init()
+        void control_init()
         {
             main_panel = new ControlPanel(
                     dock_style: DockStyle.Fill,
@@ -120,6 +126,37 @@ namespace Automation
                         using_color: Color.Black)
                 );
 
+            // **** settings **** //
+
+            control_panel.add(new ControlPanel(
+                dock_style: DockStyle.Top,
+                using_float_height: true,
+                hide_panel: false,
+                using_panel_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(28, 40, 52),
+                    using_padding: new Padding(20, 0, 0, 0)),
+                using_name: "settings"
+                ));
+            control_panel.search_panel_control("settings")[0].add(new ControlButton(
+                using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                using_delegate: new MouseEventHandler(open_settings_form),
+                using_name: "module_settings",
+                using_text: "Настройки модуля"
+                ));
+            control_panel.add(new ControlButton(
+                dock_style: DockStyle.Top,
+                using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(44, 62, 80),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                using_name: "settings",
+                using_text: "Настройки модуля",
+                using_button_text_constructor: new ControlConstructor(using_color: Color.LightGray),
+                using_delegate: new MouseEventHandler(hide_control_panel),
+                using_height: 55
+                ));
+            
             // **** module **** //
 
             control_panel.add(new ControlPanel(
@@ -172,7 +209,24 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
-                using_menu: new ButtonConstructor[] {new ButtonConstructor(
+                using_menu: new ButtonConstructor[] {
+                    new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть все порты",
+                    using_delegate: new MouseEventHandler(close_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть все порты",
+                    using_delegate: new MouseEventHandler(open_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
                     using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -181,7 +235,7 @@ namespace Automation
                     using_delegate: new MouseEventHandler(close_port),
                     using_name: "port_chanelC",
                     using_height: 55),
-                    new ButtonConstructor(
+                new ButtonConstructor(
                     using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -208,11 +262,27 @@ namespace Automation
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть все порты",
+                    using_delegate: new MouseEventHandler(close_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть все порты",
+                    using_delegate: new MouseEventHandler(open_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
                     using_text: "Закрыть порт",
                     using_delegate: new MouseEventHandler(close_port),
                     using_name: "port_chanelB",
                     using_height: 55),
-                    new ButtonConstructor(
+                new ButtonConstructor(
                     using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -232,7 +302,24 @@ namespace Automation
                 using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
                     using_padding: new Padding(40, 0, 0, 0)),
-                using_menu: new ButtonConstructor[] {new ButtonConstructor(
+                using_menu: new ButtonConstructor[] {
+                new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть все порты",
+                    using_delegate: new MouseEventHandler(close_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть все порты",
+                    using_delegate: new MouseEventHandler(open_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
                     using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -241,7 +328,7 @@ namespace Automation
                     using_delegate: new MouseEventHandler(close_port),
                     using_name: "port_chanelA",
                     using_height: 55),
-                    new ButtonConstructor(
+                new ButtonConstructor(
                     using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -265,7 +352,24 @@ namespace Automation
                 using_delegate: new MouseEventHandler(open_com_port_form),
                 using_name: "control_port",
                 using_text: "Порт управления",
-                using_menu: new ButtonConstructor[] {new ButtonConstructor(
+                using_menu: new ButtonConstructor[] {
+                new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Закрыть все порты",
+                    using_delegate: new MouseEventHandler(close_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
+                    using_dock_style: DockStyle.Top,
+                    using_button_constructor: new ControlConstructor(
+                    using_color: Color.FromArgb(113, 125, 137),
+                    using_padding: new Padding(40, 0, 0, 0)),
+                    using_text: "Открыть все порты",
+                    using_delegate: new MouseEventHandler(open_all_ports),
+                    using_height: 55),
+                new ButtonConstructor(
                     using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -274,7 +378,7 @@ namespace Automation
                     using_delegate: new MouseEventHandler(close_port),
                     using_name: "control_port",
                     using_height: 55),
-                    new ButtonConstructor(
+                new ButtonConstructor(
                     using_dock_style: DockStyle.Top,
                     using_button_constructor: new ControlConstructor(
                     using_color: Color.FromArgb(113, 125, 137),
@@ -338,10 +442,25 @@ namespace Automation
             main_panel.search_panel_control("condition_panel")[0].add(new ControlPanel(
                 using_name: "mtu_condition_panel",
                 using_width: 350,
+                using_float_height: true,
                 dock_style: DockStyle.Left,
                 using_panel_constructor: new ControlConstructor(
                     using_color: Color.Black,
                     using_padding: new Padding(0, 0, 10, 0))
+                ));
+            main_panel.search_panel_control("mtu_condition_panel")[0].add(new ControlButton(
+                using_name: "psc_current",
+                    using_text: "Ток потребления модуля: ",
+                    value_data_sending: new CheckButtonClass(
+                        module: module_settings.psc,
+                        address: new byte[2] { 0x01, 0x0A },
+                        port: "Control Port"),
+                    using_button_constructor: new ControlConstructor(
+                        using_color: Color.Gray,
+                        using_padding: new Padding(40, 0, 0, 0)
+                        ),
+                    using_height: 55,
+                    dock_style: DockStyle.Top
                 ));
             main_panel.search_panel_control("mtu_condition_panel")[0].add(new ControlButton(
                 using_name: "mtu_220v_tu",
@@ -463,6 +582,33 @@ namespace Automation
                     }
                 }
             });
+            Task.Run(async ()=> {
+                while (true)
+                {
+                    if (port_chanel_a.IsOpen && module_settings.AllAddres.module_name != "Test") 
+                    {
+                        foreach (DataSending ds in module_settings.AllAddres.data_to_send)
+                        {
+                            try
+                            {
+                                port_chanel_a.Transmit(ds.send_data());
+                            }
+                            catch (Exception error)
+                            {
+                                BeginInvoke((MethodInvoker)(() =>
+                                {
+                                    condition_tb.Text += error.Message + Environment.NewLine;
+                                }));
+                            }
+                            await Task.Delay(100);
+                        }
+                    }
+                    else
+                    {
+                        await Task.Delay(100);
+                    }
+                }
+            });
         }
 
         void form_key_down(object sender, KeyEventArgs e)
@@ -482,6 +628,7 @@ namespace Automation
                     if (string.Join("", admin_text) == "ad")
                     {
                         cntr_key_pressed = false;
+                        admin_text.Clear();
                         AllButtonTable all_button_table = new AllButtonTable(main_panel.search_button_control());
                         all_button_table.Show();
                     }
@@ -501,12 +648,13 @@ namespace Automation
                 case Keys.X:
                     if(cntr_key_pressed)
                     {
-                        if (port2 == null)
-                        {
-                            port2 = new TransmitionArray(port_chanel_a);
-                            port2.FormClosing += (a, b) => { port2 = null; };
-                            port2.Show();
-                        }
+                        port2.Show();
+                        //if (port2 == null)
+                        //{
+                        //    port2 = new TransmitionArray(port_chanel_a);
+                        //    port2.FormClosing += (a, b) => { port2 = null; };
+                        //    port2.Show();
+                        //}
                     }
                     break;
                 default:
@@ -528,35 +676,59 @@ namespace Automation
 
         void list_of_all_modules()
         {
-            all_addres = new List<ModuleParameters>();
-            all_addres.Add(new ModuleParameters("Test"));
-            all_addres.Add(new ModuleParameters("RTU5"));
-            for(int a = 0; a < 16; a++)
-            {
-                all_addres.Find(x => x.module_name == "Test").din16[a].address = new byte[2] { 0, (byte)(a+1) };
-                all_addres.Find(x => x.module_name == "RTU5").din16[a].address = new byte[2] { 0, (byte)(a+1) };
-            }
-            for (int a = 0; a < 3; a++)
-            {
-                all_addres.Find(x => x.module_name == "Test").kf[a].address = new byte[2] { 0, (byte)(a+1) };
-                all_addres.Find(x => x.module_name == "RTU5").kf[a].address = new byte[2] { 0, (byte)(a+1) };
-                all_addres.Find(x => x.module_name == "Test").tc[a].address = new byte[2] { 0, (byte)(a+1) };
-                all_addres.Find(x => x.module_name == "RTU5").tc[a].address = new byte[2] { 0, (byte)(a+1) };
-            }
+            using (StreamReader sw = new StreamReader(this_directory + @"\JSon\" + "all_addres.txt"))
+                all_addres = JsonConvert.DeserializeObject<List<ModuleParameters>>(sw.ReadToEnd());
             module_settings.AllAddres = all_addres[0];
+            //foreach(ModuleParameters mp in all_addres)
+            //{
+            //    mp.tu.Add(new CheckButtonClass(
+            //    module: new DataAddress(1),
+            //        address: new byte[2] { 0, 0 },
+            //        port: "Module Port"
+            //        ));
+            //}
+            //all_addres.Add(new ModuleParameters("MTU3"));
+            //all_addres.Find(x => x.module_name.Contains("MTU")).data_to_send.Clear();
+            //all_addres.Find(x => x.module_name == "MTU3").data_to_send.Add(new DataSending(module_settings.module, new byte[] { 0x01, 0x02, 0x00, 0x01, 0x00, 0x12 }));
+            //all_addres.Find(x => x.module_name == "MTU3").data_to_send.Add(new DataSending(module_settings.module, new byte[] { 0x01, 0x04, 0x01, 0x00, 0x00, 0x16 }));
         }
 
         #endregion
 
         void port_control_sending_data_button(object sender, MouseEventArgs e)
         {
-            if (((ControlButton)sender).send_data == null) return;
-            byte[] send = ((ControlButton)sender).send_data.send_data();
-            send[send.Length - 1] = ((ControlButton)sender).button_on_off();
-            port_control.set_interrupt(send);
+            if (e.Button == MouseButtons.Right)
+            {
+                open_form_with_dialog(sender, e);
+                return;
+            }
+            else
+            {
+                if (((ControlButton)sender).send_data == null) return;
+                byte[] send = ((ControlButton)sender).send_data.send_data();
+                send[send.Length - 1] = ((ControlButton)sender).button_on_off();
+                port_control.set_interrupt(send);
+            }                
         }
 
-        private void hide_control_panel(object sender, MouseEventArgs e)
+        void port_module_sending_data_button(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                return;
+            }
+            else
+            {
+                if (((ControlButton)sender).send_data == null) return;
+                byte[] send = ((ControlButton)sender).send_data.send_data();
+                send[send.Length - 1] = ((ControlButton)sender).button_on_off();
+                port_chanel_a.set_interrupt(send);
+                port_chanel_b.set_interrupt(send);
+                port_chanel_c.set_interrupt(send);
+            }                
+        }
+
+        void hide_control_panel(object sender, MouseEventArgs e)
         {
             foreach(ControlPanel cp in control_panel.search_panel_control())
             {
@@ -569,7 +741,7 @@ namespace Automation
 
         #region open forms
 
-        private void open_form_with_dialog(object sender, MouseEventArgs e)
+        void open_form_with_dialog(object sender, MouseEventArgs e)
         {
             windows_variant win = new windows_variant(
                 Cursor.Position.X - 50,
@@ -625,12 +797,32 @@ namespace Automation
         {
             MainTMWindow main_tm_window = new MainTMWindow(
                 module_settings: module_settings,
-                mouse_event_handler: new MouseEventHandler(port_control_sending_data_button)
+                mouse_event_handler: new MouseEventHandler(port_control_sending_data_button),
+                port_module: new MouseEventHandler(port_module_sending_data_button),
+                port: port_control
                 );
             open_new_child_form(main_tm_window);
         }
 
         #endregion
+
+        #region кнопки основное управление
+
+        void open_all_ports(object sender, MouseEventArgs e)
+        {
+            open_port(new ControlButton(using_name: "control_port"), null);
+            open_port(new ControlButton(using_name: "port_chanelA"), null);
+            open_port(new ControlButton(using_name: "port_chanelB"), null);
+            open_port(new ControlButton(using_name: "port_chanelC"), null);
+        }
+
+        void close_all_ports(object sender, MouseEventArgs e)
+        {
+            close_port(new ControlButton(using_name: "control_port"), null);
+            close_port(new ControlButton(using_name: "port_chanelA"), null);
+            close_port(new ControlButton(using_name: "port_chanelB"), null);
+            close_port(new ControlButton(using_name: "port_chanelC"), null);
+        }
 
         void open_port(object sender, MouseEventArgs e)
         {
@@ -692,19 +884,19 @@ namespace Automation
 
             if (using_port.data_receive[1] == 0x04) 
             {
-                all_button = main_panel.search_button_control().FindAll(x => x.value_data_sending != null && x.value_data_sending.port == "Control Port");
+                all_button = main_panel.search_button_control().FindAll(x => x.value_data_sending != null);
                 for (int a = 0; a < using_port.data_receive[2] / 2; a += 2) 
                 {
                     for (int item = 0; item < all_button.Count; item++)
                     {
-                        all_button[item].check_value_result(checkout, using_port.result[a / 2]);
+                        all_button[item].check_value_result(checkout, using_port.result[a / 2], using_port.name);
                     }
                     checkout[2] += 2;
                 }
             }
             else if(using_port.data_receive[1] == 0x02)
             {
-                all_button = main_panel.search_button_control().FindAll(x => x.color_data_sending != null && x.color_data_sending.port == "Control Port");
+                all_button = main_panel.search_button_control().FindAll(x => x.color_data_sending != null);
                 for (int loop1 = 0; loop1 < using_port.data_receive[2]; loop1++)
                 {
                     for (int loop2 = 0; loop2 < 2; loop2++)
@@ -713,7 +905,7 @@ namespace Automation
                         {
                             for (int item = 0; item < all_button.Count; item++)
                             {
-                                all_button[item].check_color_result(checkout, using_port.data_receive[loop1 + 3] & (1 << (loop3 + loop2 * 4)));
+                                all_button[item].check_color_result(checkout, using_port.data_receive[loop1 + 3] & (1 << (loop3 + loop2 * 4)), using_port.name);
                             }
                             checkout[2] += 1;
                         }
@@ -729,8 +921,17 @@ namespace Automation
 
         void change_module(object sender, MouseEventArgs e)
         {
-            module_settings.AllAddres = all_addres.Find(x => x.module_name == (((ControlButton)sender).Name));
+            module_settings.AllAddres = all_addres.Find(x => x.module_name == ((ControlButton)sender).Name);
             open_module_form();
         }
+
+        void open_settings_form(object sender, MouseEventArgs e)
+        {
+            Settings settings = new Settings(module_settings);
+            open_new_child_form(settings);
+            settings.FormClosing += (a, b) => { open_module_form(); settings.Dispose(); };
+        }
+
+        #endregion
     }
 }

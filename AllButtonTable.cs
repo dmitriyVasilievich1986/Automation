@@ -26,12 +26,23 @@ namespace Automation
             buttons.Columns.Add("color modul:", typeof(byte));
             buttons.Columns.Add("color addres hi:", typeof(byte));
             buttons.Columns.Add("color addres lo:", typeof(byte));
+            buttons.Columns.Add("data send:", typeof(string));
 
+            
             foreach(ControlButton cb in all_button)
             {
                 DataRow dr = buttons.NewRow();
                 dr["Название кнопки"] = cb.Name;
                 dr["Текст кнопки"] = cb.Text;
+                string data = "";
+                if (cb.send_data != null)
+                {
+                    foreach (byte b in cb.send_data.send_data())
+                    {
+                        data += b.ToString("X2") + " ";
+                    }
+                }                
+                dr["data send:"] = data;
                 if (cb.value_data_sending != null)
                 {
                     dr["port name value"] = cb.value_data_sending.port;

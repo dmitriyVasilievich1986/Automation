@@ -44,3 +44,6 @@ C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.AllB
 C:\Users\Professional\Documents\Projects\C#\Automation\obj\Debug\Automation.MainTMWindow.resources
 C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.AllButtonTable.resources
 C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.MainTMWindow.resources
+C:\Users\d.shcherbachenya\Documents\C#\Automation\bin\Debug\Newtonsoft.Json.dll
+C:\Users\d.shcherbachenya\Documents\C#\Automation\bin\Debug\Newtonsoft.Json.xml
+C:\Users\d.shcherbachenya\Documents\C#\Automation\obj\Debug\Automation.csproj.CopyComplete

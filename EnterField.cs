@@ -12,6 +12,9 @@ namespace Automation
 {
     public partial class EnterField : Form
     {
+        public delegate void EnterFormHandler(string text);
+        public event EnterFormHandler enter_handler;
+
         public EnterField(string text, String input)
         {
             InitializeComponent();
@@ -24,14 +27,15 @@ namespace Automation
                 {
                     if (input_tb.Text == input)
                     {
-                        input_tb.Text = "";
                         Dispose();
                     }
+                    else
+                        enter_handler.Invoke(input_tb.Text);
                 }
                 else if(e.KeyCode == Keys.Escape)
                 {
                     input_tb.Text = "";
-                    Dispose();
+                    Close();
                 }
             };
         }
