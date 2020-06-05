@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,51 +10,25 @@ using System.Windows.Forms;
 
 namespace Automation
 {
-    class ModifyControls
-    {
-
-    }
-
     public class ButtonConstructor
     {
-        public DockStyle dock_style;
-        public Color back_color;
-        public Padding button_padding;
-        public Color text_color;
-        public Padding text_padding;
-        public int width;
-        public int height;
         public string name;
         public string text;
         public string description;
         public Delegate new_delegate;
+        public ControlButton.cmh click_mouse_handler;
 
         public ButtonConstructor(
-            DockStyle using_dock_style = DockStyle.Top,
-            ControlConstructor using_button_constructor = null,
-            ControlConstructor using_button_text_constructor = null,
-            int using_width = 100,
-            int using_height = 100,
-            string using_text = "",
-            string using_name = "",
-            string using_description = "",
-            Delegate using_delegate = null,
-            ToolTip using_tooltip = null,
-            ControlButton[] using_menu = null,
-            bool hide_panel = true
+            string text = "",
+            string name = "",
+            string description = "",
+            ControlButton.cmh click_mouse_handler = null
         )
         {
-            dock_style = using_dock_style;
-            if (using_button_constructor != null) back_color = using_button_constructor.control_color;
-            if (using_button_constructor != null) button_padding = using_button_constructor.control_padding;
-            if (using_button_text_constructor != null) text_color = using_button_text_constructor.control_color;
-            if (using_button_text_constructor != null) text_padding = using_button_text_constructor.control_padding;
-            width = using_width;
-            height = using_height;
-            name = using_name;
-            text = using_text;
-            description = using_description;
-            new_delegate = using_delegate;
+            this.text = text;
+            this.name = name;
+            this.description = description;
+            this.click_mouse_handler = click_mouse_handler;
         }
     }
 
@@ -76,149 +51,6 @@ namespace Automation
         {
             control_padding = using_padding;
             control_color = using_color;
-        }
-    }
-
-    public class ControlButton : Button
-    {
-        /*
-         
-         */
-
-        ToolTip button_tooltip;
-        public string button_description = "";
-        public string result_text = "";
-        public float result = 0;
-        public ButtonConstructor[] menuing;
-        public CheckButtonClass color_data_sending;
-        public CheckButtonClass value_data_sending;
-        public Color start_color;
-        public DataSending send_data;
-
-        public ControlButton(
-            DockStyle dock_style = DockStyle.Top,
-            ControlConstructor using_button_constructor = null,
-            ControlConstructor using_button_text_constructor = null,
-            int using_width = 350,
-            int using_height = 55,
-            string using_text = "",
-            string using_name = "",
-            string using_description = "",
-            Delegate using_delegate = null,
-            ToolTip using_tooltip = null,
-            ButtonConstructor[] using_menu = null,
-            bool hide_panel = true,
-            CheckButtonClass color_data_sending = null,
-            CheckButtonClass value_data_sending = null,
-            DataSending send_data = null,
-            string start_text = ""
-        )
-        {
-            this.result_text = using_text;
-            this.MouseDown += (MouseEventHandler)using_delegate;
-            this.Width = using_width;
-            this.Height = using_height;
-            this.Dock = dock_style;
-            this.Name = using_name;
-            this.Text = using_text;
-            this.button_description = using_description;
-            this.Visible = hide_panel;
-            this.FlatStyle = FlatStyle.Flat;
-            this.TextAlign = ContentAlignment.MiddleLeft;
-            this.FlatAppearance.BorderSize = 0;
-            this.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            if (using_button_constructor != null)
-            {
-                if (using_button_constructor.control_color != null)
-                {
-                    this.BackColor = using_button_constructor.control_color;
-                    this.start_color = using_button_constructor.control_color;
-                }
-                if (using_button_constructor.control_padding != null)
-                    this.Padding = using_button_constructor.control_padding;
-            }
-            if (using_button_text_constructor != null)
-            {
-                if (using_button_text_constructor.control_color != null)
-                    this.ForeColor = using_button_text_constructor.control_color;
-            }
-            if (using_menu != null)
-                menuing = using_menu;
-            if (using_tooltip != null)
-                button_tooltip = using_tooltip;
-            if (color_data_sending != null)
-                this.color_data_sending = color_data_sending;
-            if (value_data_sending != null)
-            {
-                this.value_data_sending = value_data_sending;
-                if (value_data_sending.address[0] == 0x0 && value_data_sending.address[1] == 0x0)
-                {
-                    //if(color_data_sending!=null && value_data_sending.address[0] == 0x0 && value_data_sending.address[1] == 0x0)
-                    //    this.Visible = false;
-                    //else if(color_data_sending == null)
-                    //    this.Visible = false;
-                    this.Visible = false;
-                }
-            }
-            if (send_data != null)
-                this.send_data = send_data;
-            if (start_text != "")
-                Set_Text = start_text;
-        }
-
-        public ControlButton(ButtonConstructor constructor)
-        {
-            this.FlatStyle = FlatStyle.Flat;
-            this.TextAlign = ContentAlignment.MiddleLeft;
-            this.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            this.FlatAppearance.BorderSize = 0;
-
-            Dock = constructor.dock_style;
-            if (constructor.back_color != null) BackColor = constructor.back_color;
-            if (constructor.button_padding != null) Padding = constructor.button_padding;
-            if (constructor.text_color != null) ForeColor = constructor.text_color;
-            Width = constructor.width;
-            Height = constructor.height;
-            Name = constructor.name;
-            Text = constructor.text;
-            button_description = constructor.description;
-            this.MouseDown += (MouseEventHandler)constructor.new_delegate;
-        }
-
-        public float Result
-        {
-            get { return this.result; }
-            set
-            {
-                this.result = value;
-                BeginInvoke((MethodInvoker)(() =>
-                {
-                    this.Text = this.result_text + Math.Round(value, 3).ToString();
-                }));                
-            }
-        }
-
-        public void check_value_result(byte[] using_addres, float new_value, string port_name)
-        {
-            if (value_data_sending == null || value_data_sending.module.Addres != using_addres[0] || value_data_sending.address[0] != using_addres[1] || value_data_sending.address[1] != using_addres[2] || value_data_sending.port != port_name) return;
-            Result = new_value;
-        }
-
-        public void check_color_result(byte[] using_addres, int change_color, string port_name)
-        {
-            if (color_data_sending == null || color_data_sending.module.Addres != using_addres[0] || color_data_sending.address[0] != using_addres[1] || color_data_sending.address[1] != using_addres[2] || color_data_sending.port != port_name) return;
-            this.BackColor = change_color != 0 ? Color.Red : this.start_color;
-        }
-
-        public string Set_Text
-        {
-            set { this.Text = result_text + value; }
-        }
-
-
-        public byte button_on_off()
-        {
-            return this.BackColor == Color.Red ? (byte)0x00 : (byte)0x01;
         }
     }
 
@@ -273,7 +105,7 @@ namespace Automation
 
         public void set_visible()
         {
-            if (!float_height) return;
+            //if (!float_height) return;
             if (search_button_control().FindAll(x => x.Visible).Count == 0) this.Visible = false;
             else
             {
@@ -347,97 +179,6 @@ namespace Automation
             if (panel_tooltip != null)
             {
                 panel_tooltip.SetToolTip(this, "asd");
-            }
-        }
-    }
-
-    public class AllSettings
-    {
-        public DataAddress dout_din16 = new DataAddress(20);
-        public DataAddress dout_din32 = new DataAddress(21);
-        public DataAddress dout_control = new DataAddress(19);
-        public DataAddress mtu5 = new DataAddress(16);
-        public DataAddress psc = new DataAddress(17);
-        public DataAddress module = new DataAddress(1);
-
-        ModuleParameters all_addres = new ModuleParameters();
-
-        public ModuleParameters AllAddres
-        {
-            get { return all_addres; }
-            set
-            {
-                all_addres = value;
-                for(int a = 0; a < 16; a++)
-                {
-                    all_addres.din16[a].module = this.module;
-                    all_addres.din32[a].module = this.module;
-                }
-                for (int a = 0; a < 3; a++)
-                {
-                    all_addres.kf[a].module = this.module;
-                    all_addres.tc[a].module = this.module;
-                }
-                for(int a = 0; a < 4; a++)
-                {
-                    all_addres.tu[a].module = this.module;
-                    all_addres.tu_color[a].module = this.module;
-                }
-                foreach(DataSending ds in all_addres.data_to_send)
-                    ds.address = this.module;
-            }
-        }
-    }
-
-    public class ModuleParameters
-    {
-        public string module_name;
-        public List<CheckButtonClass> din16 = new List<CheckButtonClass>();
-        public List<CheckButtonClass> din32 = new List<CheckButtonClass>();
-        public List<CheckButtonClass> kf = new List<CheckButtonClass>();
-        public List<CheckButtonClass> tc = new List<CheckButtonClass>();
-        public List<CheckButtonClass> tu = new List<CheckButtonClass>();
-        public List<CheckButtonClass> tu_color = new List<CheckButtonClass>();
-        public List<DataSending> data_to_send = new List<DataSending>();
-
-        public ModuleParameters(string module_name = "")
-        {
-            this.module_name = module_name;
-            for (int a = 0; a < 16; a++)
-            {
-                din16.Add(new CheckButtonClass(
-                    module: new DataAddress(1),
-                    address: new byte[2] { 0,0},
-                    port: "Module Port"
-                    ));
-                din32.Add(new CheckButtonClass(
-                    module: new DataAddress(1),
-                    address: new byte[2] { 0,0},
-                    port: "Module Port"
-                    ));
-            }
-            for (int a = 0; a < 4; a++)
-            {
-                kf.Add(new CheckButtonClass(
-                    module: new DataAddress(1),
-                    address: new byte[2] { 0,0},
-                    port: "Module Port"
-                    ));
-                tc.Add(new CheckButtonClass(
-                    module: new DataAddress(1),
-                    address: new byte[2] { 0,0},
-                    port: "Module Port"
-                    ));
-                tu.Add(new CheckButtonClass(
-                    module: new DataAddress(1),
-                    address: new byte[2] { 0,0},
-                    port: "Module Port"
-                    ));
-                tu_color .Add(new CheckButtonClass(
-                    module: new DataAddress(1),
-                    address: new byte[2] { 0,0},
-                    port: "Module Port"
-                    ));
             }
         }
     }

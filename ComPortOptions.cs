@@ -15,13 +15,12 @@ namespace Automation
     {
         Modbus port;
         ControlPanel main_panel;
+        MainForm main_form;
 
-        public event EventHandler some_event;
-        public string event_text = "";
-
-        public ComPortOptions(Modbus using_port)
+        public ComPortOptions(Modbus using_port, MainForm main_form)
         {
             port = using_port;
+            this.main_form = main_form;
             InitializeComponent();
             this.Dock = DockStyle.Fill;
             this.FormBorderStyle = FormBorderStyle.None;
@@ -40,8 +39,8 @@ namespace Automation
                     BeginInvoke((MethodInvoker)(() =>
                     {
                         main_panel.search_button_control("com_port_addres")[0].BackColor = port.exchange_counter < 5 && port.IsOpen ? Color.Green : Color.FromArgb(113, 125, 137);
-                        main_panel.search_button_control("com_port_close")[0].Visible = port.IsOpen ? true : false;
-                        main_panel.search_button_control("com_port_open")[0].Visible = port.IsOpen ? false : true;
+                        main_panel.search_button_control("close" + port.index)[0].Visible = port.IsOpen ? true : false;
+                        main_panel.search_button_control("open" + port.index)[0].Visible = port.IsOpen ? false : true;
                     }));
                     await Task.Delay(100);
                 }
@@ -67,8 +66,9 @@ namespace Automation
                     using_padding: new Padding(0, 50, 10, 0)
                     )));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
-                using_name: "com_port_open",
-                using_delegate: new MouseEventHandler(open_port),
+                using_name: "open" + port.index,
+                //using_delegate: new MouseEventHandler(open_port),
+                using_delegate: new MouseEventHandler(main_form.open_port),
                 using_text: "Открыть порт",
                 hide_panel: port.IsOpen ? false : true,
                 using_height: 55,
@@ -77,9 +77,9 @@ namespace Automation
                     using_padding: new Padding(40, 0, 0, 0))
                 ));
             this.main_panel.search_panel_control("com_port_buttons")[0].add(new ControlButton(
-                using_name: "com_port_close",
+                using_name: "close" + port.index,
                 using_text: "Закрыть порт",
-                using_delegate: new MouseEventHandler(close_port),
+                using_delegate: new MouseEventHandler(main_form.close_port),
                 hide_panel: port.IsOpen ? true : false,
                 using_height: 55,
                 using_button_constructor: new ControlConstructor(
@@ -134,42 +134,16 @@ namespace Automation
                 }
                 try
                 {
-                    port.PortName = ef.input_cb.Text;
                     BeginInvoke((MethodInvoker)(() =>
                     {
+                        main_form.condition_tb.Text += $"Порт изменен на {port.PortName}" + Environment.NewLine;
                         this.main_panel.search_button_control("com_port_addres")[0].Text = port.PortName;
                     }));
+                    port.PortName = ef.input_cb.Text;
                 }
                 catch (Exception) { }
                 ef.Dispose();
             };
-        }
-
-        void open_port(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                port.Open();                
-            }
-            catch (Exception error)
-            {
-                event_text = error.Message;
-                some_event.Invoke(this, e);
-                event_text = "";
-            }
-            if (port.IsOpen)
-            {
-                event_text = $"  Порт {port.PortName} открыт";
-                port.exchange_counter = 20;
-                some_event.Invoke(this, e);
-            }
-        }
-
-        void close_port(object sender, MouseEventArgs e)
-        {
-            port.Close();
-            event_text = $"  Порт {port.PortName} закрыт";
-            some_event.Invoke(this, e);
         }
     }
 }

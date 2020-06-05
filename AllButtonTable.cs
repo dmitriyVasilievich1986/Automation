@@ -18,6 +18,7 @@ namespace Automation
             DataTable buttons = new DataTable("All buttons");
             buttons.Columns.Add("Название кнопки", typeof(string));
             buttons.Columns.Add("Текст кнопки", typeof(string));
+            buttons.Columns.Add("button text value", typeof(string));
             buttons.Columns.Add("port name value", typeof(string));
             buttons.Columns.Add("value modul:", typeof(byte));
             buttons.Columns.Add("value addres hi:", typeof(byte));
@@ -45,6 +46,7 @@ namespace Automation
                 dr["data send:"] = data;
                 if (cb.value_data_sending != null)
                 {
+                    dr["button text value"] = cb.value_data_sending.button_text;
                     dr["port name value"] = cb.value_data_sending.port;
                     dr["value modul:"] = cb.value_data_sending.module.Addres;
                     dr["value addres hi:"] = cb.value_data_sending.address[0];
@@ -68,6 +70,7 @@ namespace Automation
                     all_button[a].Text = buttons.Rows[a].Field<string>("Текст кнопки");
                     if (all_button[a].value_data_sending != null)
                     {
+                        all_button[a].value_data_sending.button_text = buttons.Rows[a].Field<string>("button text value");
                         all_button[a].value_data_sending.port = buttons.Rows[a].Field<string>("port name value");
                         all_button[a].value_data_sending.address[0] = buttons.Rows[a].Field<byte>("value addres hi:");
                         all_button[a].value_data_sending.address[1] = buttons.Rows[a].Field<byte>("value addres lo:");

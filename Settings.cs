@@ -70,36 +70,15 @@ namespace Automation
 
         void settings_panel_fill()
         {
-            main_panel.search_panel_control("Settings Panel")[0].add(new ControlButton(
-                using_name: "psc",
-                using_text: $"Адрес psc: ",
-                start_text: module_settings.psc.Addres.ToString(),
+            for(int a=0;a< module_settings.all_modules_addres.Count; a++)
+            {
+                main_panel.search_panel_control("Settings Panel")[0].add(new ControlButton(
+                using_name: module_settings.all_modules_addres[a].name,
+                using_text: $"Адрес {module_settings.all_modules_addres[a].name}: ",
+                start_text: module_settings.all_modules_addres[a].Addres.ToString(),
                 using_delegate: new MouseEventHandler(change_addres)
                 ));
-            main_panel.search_panel_control("Settings Panel")[0].add(new ControlButton(
-                using_name: "mtu5",
-                using_text: $"Адрес mtu5: ",
-                start_text: module_settings.mtu5.Addres.ToString(),
-                using_delegate: new MouseEventHandler(change_addres)
-                ));
-            main_panel.search_panel_control("Settings Panel")[0].add(new ControlButton(
-                using_name: "dout_din32",
-                using_text: $"Адрес Dout Din32: ",
-                start_text: module_settings.dout_din32.Addres.ToString(),
-                using_delegate: new MouseEventHandler(change_addres)
-                ));
-            main_panel.search_panel_control("Settings Panel")[0].add(new ControlButton(
-                using_name: "dout_din16",
-                using_text: $"Адрес Dout Din16: ",
-                start_text: module_settings.dout_din16.Addres.ToString(),
-                using_delegate: new MouseEventHandler(change_addres)
-                ));
-            main_panel.search_panel_control("Settings Panel")[0].add(new ControlButton(
-                using_name: "module",
-                using_text: $"Адрес модуля: ",
-                start_text: module_settings.module.Addres.ToString(),
-                using_delegate: new MouseEventHandler(change_addres)
-                ));
+            }
         }
 
         void all_button_style()
@@ -115,29 +94,12 @@ namespace Automation
         void close_form(object sender, MouseEventArgs e)
         {
             this.Close();
+            this.Dispose();
         }
 
         void change_addres(object sender, MouseEventArgs e)
         {
-            DataAddress address = new DataAddress(1);
-            switch (((ControlButton)sender).Name)
-            {
-                case "module":
-                    address = module_settings.module;
-                    break;
-                case "dout_din16":
-                    address = module_settings.dout_din16;
-                    break;
-                case "dout_din32":
-                    address = module_settings.dout_din32;
-                    break;
-                case "psc":
-                    address = module_settings.psc;
-                    break;
-                case "mtu5":
-                    address = module_settings.mtu5;
-                    break;
-            }
+            DataAddress address = module_settings.all_modules_addres.Find(x => x.name == (((ControlButton)sender).Name));
 
             EnterField ef = new EnterField("  Введи новый адрес", address.Addres.ToString());
             ef.Show();            

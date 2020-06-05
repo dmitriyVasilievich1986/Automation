@@ -36,7 +36,8 @@ namespace Automation
         private ByteToFloat byte_to_float = new ByteToFloat();
 
         public string name;
-        public int exchange_counter = 0;
+        public string index = "";
+        public int exchange_counter = 10;
         public byte[] data_transmit;
         public byte[] data_receive;
         public byte[] data_interupt;
@@ -47,13 +48,16 @@ namespace Automation
         public event PortReceiveHandler receive_handler;
         public delegate void PortTransmitHandler(Modbus using_port);
         public event PortTransmitHandler transmit_handler;
+        public int interrupt_delay = 0;
 
         public Modbus(
             string using_name = "",
             int using_speed = 115200,
-            string using_port_name = "COM1"
+            string using_port_name = "COM1",
+            string index = ""
             )
         {
+            this.index = index;
             this.BaudRate = using_speed;
             this.PortName = using_port_name;
             this.name = using_name;
@@ -127,12 +131,13 @@ namespace Automation
 
         public void set_interrupt(byte[] data)
         {
-            if (!this.IsOpen || this.data_interupt != null) return;
+            if (!this.IsOpen || this.data_interupt != null || interrupt_delay > 0 || this.exchange_counter >= 10) return;
             this.data_interupt = data;
+            interrupt_delay = 4;
         }
 
         public void receive(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
-        {
+        {            
             if (exchange_counter >= 5)
                 exchange_counter = 0;
             else
@@ -148,6 +153,7 @@ namespace Automation
             if (ModRTU_CRC(data_receive, data_receive.Length - 2)[data_receive.Length - 2] != data_receive[data_receive.Length - 2] ||
                 ModRTU_CRC(data_receive, data_receive.Length - 1)[data_receive.Length - 1] != data_receive[data_receive.Length - 1]) return;
 
+            if (interrupt_delay > 0) interrupt_delay--;
 
             receive_array = "Прием: ";
             foreach (byte a in data_receive) receive_array += a.ToString("X2") + " ";

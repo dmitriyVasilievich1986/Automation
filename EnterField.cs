@@ -14,6 +14,8 @@ namespace Automation
     {
         public delegate void EnterFormHandler(string text);
         public event EnterFormHandler enter_handler;
+        public delegate void WithoutChangeHandler();
+        public event WithoutChangeHandler without_change_handler;
 
         public EnterField(string text, String input)
         {
@@ -21,12 +23,14 @@ namespace Automation
             enter_text_field.Text = text;
             input_tb.Text = input;
             input_cb.Visible = false;
-            input_tb.MouseDown += (s, e) => { if (input_tb.Text == input) input_tb.Text = ""; };
+            input_tb.Focus();
+            input_tb.SelectAll();
             this.KeyDown += (s, e) => {
                 if(e.KeyCode == Keys.Enter)
                 {
-                    if (input_tb.Text == input)
+                    if (input_tb.Text == "")
                     {
+                        without_change_handler?.Invoke();
                         Dispose();
                     }
                     else
@@ -35,6 +39,7 @@ namespace Automation
                 else if(e.KeyCode == Keys.Escape)
                 {
                     input_tb.Text = "";
+                    without_change_handler?.Invoke();
                     Close();
                 }
             };
@@ -50,11 +55,13 @@ namespace Automation
             this.KeyDown += (s, e) => {
                 if(e.KeyCode == Keys.Enter)
                 {
+                    enter_handler?.Invoke(input_tb.Text);
                     this.Close();
                 }
                 else if(e.KeyCode == Keys.Escape)
                 {
                     input_cb.Text = "";
+                    without_change_handler?.Invoke();
                     this.Close();
                 }
             };

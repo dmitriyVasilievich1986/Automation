@@ -41,6 +41,7 @@ namespace Automation
                     )));
             main_panel.Controls.Add(description_textbox);
             this.Controls.Add(main_panel);
+
         }
 
         public windows_variant(int x, int y, string describe, ButtonConstructor[] menu)
@@ -60,6 +61,11 @@ namespace Automation
                 this.Height = description_textbox.Height + Padding.Top + Padding.Bottom + main_panel.search_button_control().Count * 55;
             }
             else this.Height = description_textbox.Height + Padding.Top + Padding.Bottom;
+            foreach (ControlButton cb in main_panel.search_button_control())
+            {
+                cb.MouseDown += (s, e) => { this.Dispose(); };
+                cb.MouseDown += (MouseEventHandler)cb.mouse_click;
+            }
         }
     }
 }
